@@ -227,7 +227,7 @@ export const ApiConfigSchema = z.object({
   tags: z.array(z.string()).optional(),
 });
 
-export type ApiConfig = z.infer<typeof ApiConfigSchema>;
+export type ApiConfigInternal = z.infer<typeof ApiConfigSchema>;
 
 type IsParameter<Part> = Part extends `:${infer ParamName}` ? ParamName : never;
 type FilteredParts<Path> = Path extends `${infer PartA}/${infer PartB}`
@@ -326,7 +326,7 @@ export function apiConfig<
   ResponseProviderValidation extends ZodType,
   ResponseValidation extends ZodType
 >(
-  config: Omit<ApiConfig, 'path' | 'request' | 'response'> & {
+  config: Omit<ApiConfigInternal, 'path' | 'request' | 'response'> & {
     path: Route;
     request?: {
       validation?: {
@@ -375,6 +375,8 @@ export function apiConfig<
       possibleErrors?: StatusCodes[];
     };
   }
-): ApiConfig {
+): ApiConfigInternal {
   return config;
 }
+
+export type ApiConfig = Parameters<typeof apiConfig>[0];

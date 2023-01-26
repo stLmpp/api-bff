@@ -1,4 +1,4 @@
-import { type ApiConfig } from '../api-config/api-config.js';
+import { type ApiConfigInternal } from '../api-config/api-config.js';
 import {
   CONFIG_CACHING_PATH_DEFAULT,
   type ConfigCaching,
@@ -8,7 +8,7 @@ import { getConfig } from '../config/config.js';
 
 import { getCachingStrategy } from './caching-resolver.js';
 
-export async function getApiCachingConfig(apiConfig: ApiConfig) {
+export async function getApiCachingConfig(apiConfig: ApiConfigInternal) {
   const config = await getConfig();
   const defaultConfig = {
     path: CONFIG_CACHING_PATH_DEFAULT,

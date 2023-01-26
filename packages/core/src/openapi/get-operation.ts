@@ -1,14 +1,14 @@
 import { StatusCodes } from 'http-status-codes';
 import { type OperationObject } from 'openapi3-ts';
 
-import { type ApiConfig } from '../api-config/api-config.js';
+import { type ApiConfigInternal } from '../api-config/api-config.js';
 import { uniq } from '../uniq.js';
 
 import { getContentSchemaFromZod } from './get-content-schema-from-zod.js';
 import { getErrorSchema } from './get-error-schema.js';
 import { getParameters } from './get-parameters.js';
 
-export function getOperation(apiConfig: ApiConfig): OperationObject {
+export function getOperation(apiConfig: ApiConfigInternal): OperationObject {
   const { request, response, description, summary } = apiConfig;
   const operation: OperationObject = {
     description,

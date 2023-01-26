@@ -7,7 +7,7 @@ import {
 import { ZodObject } from 'zod';
 
 import {
-  type ApiConfig,
+  type ApiConfigInternal,
   type ApiConfigRequestMapping,
   type ApiConfigRequestValidation,
 } from '../api-config/api-config.js';
@@ -86,7 +86,7 @@ function setParametersFromRequestValidation(
   }
 }
 
-export function getParameters(config: ApiConfig): ParameterObject[] {
+export function getParameters(config: ApiConfigInternal): ParameterObject[] {
   const parameters: Parameters = {
     headers: {},
     query: {},
