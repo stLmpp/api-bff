@@ -12,6 +12,7 @@
     "skipDefaultLibCheck": true,
     "useUnknownInCatchVariables": false,
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@api-bff/cli": ["packages/cli/src/index.ts"],
       "@api-bff/core": ["packages/core/src/index.ts"]

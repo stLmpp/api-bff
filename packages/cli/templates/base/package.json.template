@@ -1,0 +1,17 @@
+{
+  "name": "{projectName}",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "bff dev",
+    "build": "bff build"
+  },
+  "dependencies": {
+    "@api-bff/core": "~{coreVersion}"
+  },
+  "devDependencies": {
+    "@api-bff/cli": "~{cliVersion}"
+  }
+}

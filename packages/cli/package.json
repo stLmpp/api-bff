@@ -1,0 +1,33 @@
+{
+  "name": "@api-bff/cli",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "bff": "./dist/cli.js"
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch"
+  },
+  "dependencies": {
+    "commander": "^10.0.0",
+    "fast-glob": "~3.2.12",
+    "fs-extra": "^11.1.0",
+    "inquirer": "^9.1.4"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/inquirer": "^9.0.3",
+    "esbuild-node-externals": "^1.6.0",
+    "esbuild-plugin-copy": "^2.0.2",
+    "tsup": "~6.5.0"
+  }
+}
