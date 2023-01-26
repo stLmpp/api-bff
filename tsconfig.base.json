@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@api-bff/cli": ["packages/cli/src/index.ts"],
+      "@api-bff/core": ["packages/core/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
