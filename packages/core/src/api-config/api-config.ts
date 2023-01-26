@@ -13,8 +13,6 @@ import { ConfigCachingSchema } from '../config/config-caching.js';
 import { ErrorResponseStatusCodeSchema } from '../error-response.js';
 import { type OrPromise } from '../or-promise.js';
 
-import { RequestSchema } from './request.schema.js';
-
 const ApiConfigValidationBody: ZodType<ZodType> = z.any();
 
 const ApiConfigRequestValidationParams: ZodType<
@@ -30,35 +28,35 @@ const AnyPromiseSchema = z.union([z.any(), z.any().promise()]);
 const KeySchema = z.union([z.string(), z.number(), z.symbol()]);
 
 const ApiConfigRequestMappingBodySchema = z.union([
-  z.function().args(z.any(), RequestSchema).returns(AnyPromiseSchema),
+  z.function().args(z.any(), z.any()).returns(AnyPromiseSchema),
   z.record(
     KeySchema,
     z.union([
-      z.function().args(z.any(), RequestSchema).returns(AnyPromiseSchema),
+      z.function().args(z.any(), z.any()).returns(AnyPromiseSchema),
       KeySchema,
       z.union([
         z.object({
           body: z.union([
             KeySchema,
-            z.function().args(z.any(), RequestSchema).returns(AnyPromiseSchema),
+            z.function().args(z.any(), z.any()).returns(AnyPromiseSchema),
           ]),
         }),
         z.object({
           param: z.union([
             KeySchema,
-            z.function().args(z.any(), RequestSchema).returns(AnyPromiseSchema),
+            z.function().args(z.any(), z.any()).returns(AnyPromiseSchema),
           ]),
         }),
         z.object({
           query: z.union([
             KeySchema,
-            z.function().args(z.any(), RequestSchema).returns(AnyPromiseSchema),
+            z.function().args(z.any(), z.any()).returns(AnyPromiseSchema),
           ]),
         }),
         z.object({
           header: z.union([
             KeySchema,
-            z.function().args(z.any(), RequestSchema).returns(AnyPromiseSchema),
+            z.function().args(z.any(), z.any()).returns(AnyPromiseSchema),
           ]),
         }),
       ]),
@@ -78,38 +76,29 @@ const OptionalStringPromiseSchema = z.union([
 const StringPromiseSchema = z.union([z.string(), z.string().promise()]);
 
 const ApiConfigRequestMappingParamsSchema = z.union([
-  z.function().args(z.any(), RequestSchema).returns(AnyPromiseSchema),
+  z.function().args(z.any(), z.any()).returns(AnyPromiseSchema),
   z.record(
     KeySchema,
     z.union([
       KeySchema,
-      z.function().args(z.any(), RequestSchema).returns(StringPromiseSchema),
+      z.function().args(z.any(), z.any()).returns(StringPromiseSchema),
       z.union([
         z.object({
           body: z.union([
             KeySchema,
-            z
-              .function()
-              .args(z.any(), RequestSchema)
-              .returns(StringPromiseSchema),
+            z.function().args(z.any(), z.any()).returns(StringPromiseSchema),
           ]),
         }),
         z.object({
           param: z.union([
             KeySchema,
-            z
-              .function()
-              .args(z.any(), RequestSchema)
-              .returns(StringPromiseSchema),
+            z.function().args(z.any(), z.any()).returns(StringPromiseSchema),
           ]),
         }),
         z.object({
           query: z.union([
             KeySchema,
-            z
-              .function()
-              .args(z.any(), RequestSchema)
-              .returns(StringPromiseSchema),
+            z.function().args(z.any(), z.any()).returns(StringPromiseSchema),
           ]),
         }),
         z.object({
@@ -117,7 +106,7 @@ const ApiConfigRequestMappingParamsSchema = z.union([
             KeySchema,
             z
               .function()
-              .args(z.any(), RequestSchema)
+              .args(z.any(), z.any())
               .returns(OptionalStringPromiseSchema),
           ]),
         }),
@@ -131,21 +120,18 @@ export type ApiConfigRequestMappingParams = z.infer<
 >;
 
 const ApiConfigRequestMappingOtherParamsSchema = z.union([
-  z.function().args(z.any(), RequestSchema),
+  z.function().args(z.any(), z.any()),
   z.record(
     KeySchema,
     z.union([
-      z
-        .function()
-        .args(z.any(), RequestSchema)
-        .returns(OptionalStringPromiseSchema),
+      z.function().args(z.any(), z.any()).returns(OptionalStringPromiseSchema),
       KeySchema,
       z.object({
         body: z.union([
           KeySchema,
           z
             .function()
-            .args(z.any(), RequestSchema)
+            .args(z.any(), z.any())
             .returns(OptionalStringPromiseSchema),
         ]),
       }),
@@ -154,7 +140,7 @@ const ApiConfigRequestMappingOtherParamsSchema = z.union([
           KeySchema,
           z
             .function()
-            .args(z.any(), RequestSchema)
+            .args(z.any(), z.any())
             .returns(OptionalStringPromiseSchema),
         ]),
       }),
@@ -163,7 +149,7 @@ const ApiConfigRequestMappingOtherParamsSchema = z.union([
           KeySchema,
           z
             .function()
-            .args(z.any(), RequestSchema)
+            .args(z.any(), z.any())
             .returns(OptionalStringPromiseSchema),
         ]),
       }),
@@ -172,7 +158,7 @@ const ApiConfigRequestMappingOtherParamsSchema = z.union([
           KeySchema,
           z
             .function()
-            .args(z.any(), RequestSchema)
+            .args(z.any(), z.any())
             .returns(OptionalStringPromiseSchema),
         ]),
       }),
