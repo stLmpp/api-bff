@@ -1,4 +1,4 @@
-export { defineConfig } from '@api-bff/core';
+import { defineConfig } from '@api-bff/core';
 
 export default defineConfig({
   prefix: '{prefix}',

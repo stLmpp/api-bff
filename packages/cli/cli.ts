@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { program } from 'commander';
 
-import { buildCommand } from './build.js';
-import { devCommand } from './dev.js';
-import { newCommand } from './new.js';
 import packageJson from './package.json';
+import { buildCommand } from './src/build.js';
+import { newCommand } from './src/new/new.js';
+import { devCommand } from './src/serve.js';
 
 program
   .name('Api BFF CLI')
@@ -12,6 +12,5 @@ program
   .version(packageJson.version)
   .addCommand(newCommand)
   .addCommand(devCommand)
-  .addCommand(buildCommand);
-
-program.parse();
+  .addCommand(buildCommand)
+  .parse();

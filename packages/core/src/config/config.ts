@@ -1,3 +1,6 @@
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+
 import { z } from 'zod';
 
 import { getHttpClientConfig } from '../http-client/get-http-client.js';
@@ -47,7 +50,7 @@ async function parseAndAssertConfig(config: unknown): Promise<Config> {
 }
 
 async function _getConfig() {
-  const filename = new URL('../api-bff.config.js', import.meta.url);
+  const filename = pathToFileURL(join(process.cwd(), 'dist/api-bff.config.js'));
   try {
     const file = await import(filename.toString());
     if (!file.default) {

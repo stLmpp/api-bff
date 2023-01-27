@@ -1,17 +1,20 @@
 {
   "name": "{projectName}",
+  "version": "1.0.0",
   "type": "module",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "dev": "bff dev",
+    "serve": "bff serve",
     "build": "bff build"
   },
   "dependencies": {
-    "@api-bff/core": "~{coreVersion}"
+    "@api-bff/core": "~{coreVersion}",
+    "zod": "{zodVersion}"
   },
   "devDependencies": {
-    "@api-bff/cli": "~{cliVersion}"
+    "@api-bff/cli": "~{cliVersion}",
+    "typescript": "{typescriptVersion}"
   }
 }

@@ -15,7 +15,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "watch": "tsup --watch"
   },
   "dependencies": {
     "@anatine/zod-openapi": "~1.12.0",
