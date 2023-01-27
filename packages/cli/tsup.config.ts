@@ -15,6 +15,8 @@ const npmLinkPlugin = () =>
     },
   } satisfies Plugin);
 
+// @ts-expect-error tsup has a different version of esbuild so we get an error here,
+// But there is no harm for now
 export default defineConfig((options) => {
   const plugins = [
     nodeExternalsPlugin(),
