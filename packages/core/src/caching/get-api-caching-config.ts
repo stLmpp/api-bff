@@ -6,14 +6,14 @@ import {
 import { getConfig } from '../config/config.js';
 import { defaultKeyComposer } from '../config/default-key-composer.js';
 
-import { getCachingStrategy } from './caching-resolver.js';
+import { getCachingStrategyConfig } from './caching-resolver.js';
 
 export async function getApiCachingConfig(apiConfig: ApiConfigInternal) {
   const config = await getConfig();
   const defaultConfig = {
     path: CONFIG_CACHING_PATH_DEFAULT,
     keyComposer: defaultKeyComposer,
-    strategy: getCachingStrategy('memory'),
+    strategy: getCachingStrategyConfig('memory'),
   } satisfies ConfigCaching;
   const hasCachingConfig =
     apiConfig.caching !== false && (!!config.caching || !!apiConfig.caching);

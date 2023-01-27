@@ -1,7 +1,4 @@
-import {
-  type ConfigCaching,
-  type ConfigCachingStrategy,
-} from '../config/config-caching.schema.js';
+import { type ConfigCaching } from '../config/config-caching.schema.js';
 
 import { type CachingData } from './caching-data.schema.js';
 import { CachingStrategy } from './caching-strategy.js';
@@ -43,9 +40,5 @@ export class MemoryCaching extends CachingStrategy {
 
   async invalidateAll(): Promise<void> {
     this._cache.clear();
-  }
-
-  type(): ConfigCachingStrategy {
-    return 'memory';
   }
 }

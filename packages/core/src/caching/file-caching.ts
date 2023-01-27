@@ -1,10 +1,7 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import {
-  type ConfigCaching,
-  type ConfigCachingStrategy,
-} from '../config/config-caching.schema.js';
+import { type ConfigCaching } from '../config/config-caching.schema.js';
 import { pathExists } from '../path-exists.js';
 
 import { type CachingData, CachingDataSchema } from './caching-data.schema.js';
@@ -120,9 +117,5 @@ export class FileCaching extends CachingStrategy {
 
   async invalidateAll({ path }: ConfigCaching): Promise<void> {
     await rm(path, { recursive: true, force: true });
-  }
-
-  type(): ConfigCachingStrategy {
-    return 'file';
   }
 }

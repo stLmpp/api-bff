@@ -9,7 +9,7 @@ const cachingInstances = Object.freeze({
   file: new FileCaching(),
 }) satisfies Record<ConfigCachingStrategy, CachingStrategy>;
 
-export function getCachingStrategy(
+export function getCachingStrategyConfig(
   key: ConfigCachingStrategy
 ): CachingStrategy {
   return cachingInstances[key];

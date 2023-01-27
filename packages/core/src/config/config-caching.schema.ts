@@ -1,6 +1,6 @@
 import { z, type ZodType } from 'zod';
 
-import { getCachingStrategy } from '../caching/caching-resolver.js';
+import { getCachingStrategyConfig } from '../caching/caching-resolver.js';
 import { CachingStrategy } from '../caching/caching-strategy.js';
 import { MethodSchema } from '../method.schema.js';
 
@@ -40,7 +40,7 @@ export const ConfigCachingSchema = z.object({
   strategy: z
     .union([ConfigCachingStrategySchema, z.instanceof(CachingStrategy)])
     .transform((type) =>
-      typeof type === 'string' ? getCachingStrategy(type) : type
+      typeof type === 'string' ? getCachingStrategyConfig(type) : type
     ),
 });
 export type ConfigCaching = z.infer<typeof ConfigCachingSchema>;
