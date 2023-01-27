@@ -48,6 +48,8 @@ export const ConfigOpenapiObjectSchema = z.object({
   security: z.array(z.record(z.string(), z.array(z.string()))).optional(),
 });
 
+export type ConfigOpenapiObject = z.infer<typeof ConfigOpenapiObjectSchema>;
+
 export const ConfigOpenapiSchema = z.union([
   z
     .boolean()
@@ -56,5 +58,3 @@ export const ConfigOpenapiSchema = z.union([
     ),
   ConfigOpenapiObjectSchema,
 ]);
-
-export type ConfigOpenapiObject = z.infer<typeof ConfigOpenapiObjectSchema>;

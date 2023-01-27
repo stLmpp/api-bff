@@ -1,4 +1,4 @@
-import { type Method } from '../method.js';
+import { type Method } from '../method.schema.js';
 
 export interface HttpClientRequestOptions {
   method: Method;

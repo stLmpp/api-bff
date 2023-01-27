@@ -1,9 +1,9 @@
 import { type ZodError, type ZodIssue, ZodIssueCode } from 'zod';
 
 import { coerceArray } from './coerce-array.js';
-import { type ErrorResponseErrorObject } from './error-response.js';
+import { type ErrorResponseErrorObject } from './error-response.schema.js';
 import { groupToMap } from './group-to-map.js';
-import { type ParamType } from './param-type.js';
+import { type ParamType } from './param-type.schema.js';
 import { uniqWith } from './uniq-with.js';
 
 /**

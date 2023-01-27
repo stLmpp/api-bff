@@ -1,4 +1,4 @@
-import { type ConfigCachingStrategy } from '../config/config-caching.js';
+import { type ConfigCachingStrategy } from '../config/config-caching.schema.js';
 
 import { type CachingStrategy } from './caching-strategy.js';
 import { FileCaching } from './file-caching.js';

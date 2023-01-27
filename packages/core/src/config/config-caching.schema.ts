@@ -2,7 +2,7 @@ import { z, type ZodType } from 'zod';
 
 import { getCachingStrategy } from '../caching/caching-resolver.js';
 import { CachingStrategy } from '../caching/caching-strategy.js';
-import { MethodSchema } from '../method.js';
+import { MethodSchema } from '../method.schema.js';
 
 const URLSChema: ZodType<URL> = z.any();
 
@@ -29,7 +29,9 @@ const ConfigCachingKeyComposerSchema = z
   )
   .returns(z.string());
 
-type ConfigCachingKeyComposer = z.infer<typeof ConfigCachingKeyComposerSchema>;
+export type ConfigCachingKeyComposer = z.infer<
+  typeof ConfigCachingKeyComposerSchema
+>;
 
 export const ConfigCachingSchema = z.object({
   path: z.string().optional().default(CONFIG_CACHING_PATH_DEFAULT),
@@ -41,8 +43,4 @@ export const ConfigCachingSchema = z.object({
       typeof type === 'string' ? getCachingStrategy(type) : type
     ),
 });
-
 export type ConfigCaching = z.infer<typeof ConfigCachingSchema>;
-
-export const defaultKeyComposer: ConfigCachingKeyComposer = ({ url, method }) =>
-  `${method}__${url.toString()}`;

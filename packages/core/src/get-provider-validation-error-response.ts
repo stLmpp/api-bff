@@ -1,10 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 
 import { ErrorCodes } from './error-codes.js';
-import {
-  ErrorResponse,
-  type ErrorResponseErrorObject,
-} from './error-response.js';
+import { ErrorResponse } from './error-response.js';
+import { type ErrorResponseErrorObject } from './error-response.schema.js';
 
 export function getProviderValidationErrorResponse(
   errors: ErrorResponseErrorObject[]

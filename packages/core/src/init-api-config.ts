@@ -4,7 +4,7 @@ import { type RequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { type PathItemObject } from 'openapi3-ts';
 
-import { ApiConfigSchema } from './api-config/api-config.js';
+import { ApiConfigSchema } from './api-config/api-config.schema.js';
 import { getApiCachingConfig } from './caching/get-api-caching-config.js';
 import { getConfig } from './config/config.js';
 import { EXTENSION, ROUTES } from './constants.js';
@@ -19,7 +19,7 @@ import { mapRequestBody } from './map-request-body.js';
 import { mapRequestOtherParams } from './map-request-other-params.js';
 import { mapRequestParams } from './map-request-params.js';
 import { mapResponseBody } from './map-response-body.js';
-import { MethodSchema } from './method.js';
+import { MethodSchema } from './method.schema.js';
 import { getOperation } from './openapi/get-operation.js';
 import { validateParams } from './validate-params.js';
 import { fromZodErrorToErrorResponseObjects } from './zod-error-formatter.js';

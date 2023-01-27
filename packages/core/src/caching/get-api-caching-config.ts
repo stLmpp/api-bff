@@ -1,10 +1,10 @@
-import { type ApiConfigInternal } from '../api-config/api-config.js';
+import { type ApiConfigInternal } from '../api-config/api-config.schema.js';
 import {
   CONFIG_CACHING_PATH_DEFAULT,
   type ConfigCaching,
-  defaultKeyComposer,
-} from '../config/config-caching.js';
+} from '../config/config-caching.schema.js';
 import { getConfig } from '../config/config.js';
+import { defaultKeyComposer } from '../config/default-key-composer.js';
 
 import { getCachingStrategy } from './caching-resolver.js';
 

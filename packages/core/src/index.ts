@@ -22,14 +22,13 @@ export { ErrorResponse } from './error-response.js';
 
 // Types
 export type { ApiConfig } from './api-config/api-config.js';
-export type { CachingData } from './caching/caching-data.js';
-export type { Config, ConfigInput } from './config/config.js';
-export type {
-  ConfigCachingStrategy,
-  ConfigCaching,
-} from './config/config-caching.js';
-export type { ConfigOpenapiObject } from './config/config-openapi.js';
+export type { CachingData } from './caching/caching-data.schema.js';
 export type { HttpClientType } from './http-client/http-client-type.schema.js';
-export type { Method } from './method.js';
-export type { ParamType } from './param-type.js';
+export type { Method } from './method.schema.js';
+export type { ParamType } from './param-type.schema.js';
 export type { OrPromise } from './or-promise.js';
+export { Config } from './config/config.schema.js';
+export { ConfigInput } from './config/config.schema.js';
+export { ConfigCachingStrategy } from './config/config-caching.schema.js';
+export { ConfigOpenapiObject } from './config/config-openapi.schema.js';
+export { ConfigCaching } from './config/config-caching.schema.js';

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "emitDeclarationOnly": true,
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "types": ["vitest/globals"]
   },
   "exclude": ["dist"]
 }

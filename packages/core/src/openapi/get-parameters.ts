@@ -10,9 +10,9 @@ import {
   type ApiConfigInternal,
   type ApiConfigRequestMapping,
   type ApiConfigRequestValidation,
-} from '../api-config/api-config.js';
+} from '../api-config/api-config.schema.js';
 import { type Entries } from '../entries.js';
-import { type ParamType } from '../param-type.js';
+import { type ParamType } from '../param-type.schema.js';
 
 type Parameters = Record<
   Exclude<ParamType, 'body'>,

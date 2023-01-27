@@ -1,6 +1,6 @@
 import { type Request } from 'express';
 
-import { type ApiConfigRequestMappingBody } from './api-config/api-config.js';
+import { type ApiConfigRequestMappingBody } from './api-config/api-config.schema.js';
 import { isRecord } from './is-record.js';
 
 export async function mapRequestBody(

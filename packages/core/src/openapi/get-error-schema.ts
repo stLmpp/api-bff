@@ -1,7 +1,7 @@
 import { getReasonPhrase, type StatusCodes } from 'http-status-codes';
 import { type ResponseObject } from 'openapi3-ts';
 
-import { ErrorResponseSchema } from '../error-response.js';
+import { ErrorResponseSchema } from '../error-response.schema.js';
 
 import { getContentSchemaFromZod } from './get-content-schema-from-zod.js';
 

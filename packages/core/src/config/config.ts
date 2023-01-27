@@ -1,38 +1,13 @@
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { z } from 'zod';
-
-import { getHttpClientConfig } from '../http-client/get-http-client.js';
-import { HttpClientTypeSchema } from '../http-client/http-client-type.schema.js';
-import { HttpClient } from '../http-client/http-client.js';
 import { fromZodErrorToErrorResponseObjects } from '../zod-error-formatter.js';
 
-import { ConfigCachingSchema } from './config-caching.js';
-import { ConfigOpenapiSchema } from './config-openapi.js';
-
-const ConfigSchema = z.object(
-  {
-    prefix: z
-      .string()
-      .optional()
-      .transform((prefix) => prefix?.replace(/^(?!\/)/, '/') ?? ''),
-    caching: ConfigCachingSchema.optional(),
-    openapi: ConfigOpenapiSchema.optional(),
-    httpClient: z
-      .union([HttpClientTypeSchema, z.instanceof(HttpClient)])
-      .optional()
-      .default('got')
-      .transform((type) => getHttpClientConfig(type)),
-  },
-  {
-    required_error: 'API BFF Config file is required',
-    invalid_type_error: 'API BFF Config must be an object',
-  }
-);
-
-export type ConfigInput = z.input<typeof ConfigSchema>;
-export type Config = z.infer<typeof ConfigSchema>;
+import {
+  type Config,
+  type ConfigInput,
+  ConfigSchema,
+} from './config.schema.js';
 
 async function parseAndAssertConfig(config: unknown): Promise<Config> {
   const zodParsed = await ConfigSchema.safeParseAsync(config);

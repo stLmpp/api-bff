@@ -1,9 +1,9 @@
 import {
   type ConfigCaching,
   type ConfigCachingStrategy,
-} from '../config/config-caching.js';
+} from '../config/config-caching.schema.js';
 
-import { type CachingData } from './caching-data.js';
+import { type CachingData } from './caching-data.schema.js';
 import { CachingStrategy } from './caching-strategy.js';
 
 export class MemoryCaching extends CachingStrategy {

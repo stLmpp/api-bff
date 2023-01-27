@@ -3,7 +3,7 @@ import { type z, type ZodType } from 'zod';
 
 import { ErrorCodes } from './error-codes.js';
 import { ErrorResponse } from './error-response.js';
-import { type ParamType } from './param-type.js';
+import { type ParamType } from './param-type.schema.js';
 import { fromZodErrorToErrorResponseObjects } from './zod-error-formatter.js';
 
 interface ValidateParamsArgs<T, Z extends ZodType> {

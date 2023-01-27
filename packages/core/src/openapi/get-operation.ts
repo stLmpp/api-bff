@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { type OperationObject } from 'openapi3-ts';
 
-import { type ApiConfigInternal } from '../api-config/api-config.js';
+import { type ApiConfigInternal } from '../api-config/api-config.schema.js';
 import { uniq } from '../uniq.js';
 
 import { getContentSchemaFromZod } from './get-content-schema-from-zod.js';

@@ -4,10 +4,10 @@ import { join } from 'node:path';
 import {
   type ConfigCaching,
   type ConfigCachingStrategy,
-} from '../config/config-caching.js';
+} from '../config/config-caching.schema.js';
 import { pathExists } from '../path-exists.js';
 
-import { type CachingData, CachingDataSchema } from './caching-data.js';
+import { type CachingData, CachingDataSchema } from './caching-data.schema.js';
 import { CachingStrategy } from './caching-strategy.js';
 
 export class FileCaching extends CachingStrategy {

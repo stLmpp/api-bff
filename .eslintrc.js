@@ -9,7 +9,6 @@ module.exports = {
     'plugin:import/recommended',
     'plugin:import/typescript',
   ],
-  overrides: [],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -188,4 +187,12 @@ module.exports = {
       typescript: {},
     },
   },
+  overrides: [
+    {
+      files: ['*.spec.ts'],
+      rules: {
+        '@typescript-eslint/no-magic-numbers': 'off',
+      },
+    },
+  ],
 };

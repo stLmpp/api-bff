@@ -1,6 +1,6 @@
 import { type Request } from 'express';
 
-import { type ApiConfigRequestMappingParams } from './api-config/api-config.js';
+import { type ApiConfigRequestMappingParams } from './api-config/api-config.schema.js';
 
 export async function mapRequestParams(
   mapping: ApiConfigRequestMappingParams,

@@ -1,4 +1,4 @@
-import { type ApiConfigResponseMapping } from './api-config/api-config.js';
+import { type ApiConfigResponseMapping } from './api-config/api-config.schema.js';
 import { isRecord } from './is-record.js';
 
 export async function mapResponseBody(
