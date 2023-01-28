@@ -170,7 +170,7 @@ module.exports = {
     'import/newline-after-import': ['error'],
     '@typescript-eslint/no-magic-numbers': [
       'error',
-      { ignore: [1], ignoreArrayIndexes: true, ignoreTypeIndexes: true },
+      { ignore: [0, 1], ignoreArrayIndexes: true, ignoreTypeIndexes: true },
     ],
     '@typescript-eslint/no-explicit-any': ['error'],
     '@typescript-eslint/consistent-type-imports': [

@@ -31,10 +31,12 @@ export const ConfigOpenapiObjectSchema = z.object({
     })
     .optional(),
   termsOfService: z.string().optional(),
-  license: z.object({
-    name: z.string(),
-    url: z.string().optional(),
-  }),
+  license: z
+    .object({
+      name: z.string(),
+      url: z.string().optional(),
+    })
+    .optional(),
   tags: z
     .array(
       z.object({

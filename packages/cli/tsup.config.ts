@@ -10,18 +10,25 @@ const npmLinkPlugin = () =>
     name: 'npm-link',
     setup: (build) => {
       build.onEnd(() => {
-        spawnSync('npm', ['link']);
+        console.log('on end');
+        spawnSync('npm', ['link'], { stdio: 'inherit' });
       });
     },
   } satisfies Plugin);
 
-// @ts-expect-error tsup has a different version of esbuild so we get an error here,
+// @ts-expect-error tsup has a different version of esbuild, so we get an error here,
 // But there is no harm for now
 export default defineConfig((options) => {
   const plugins = [
     nodeExternalsPlugin(),
     copy({
-      assets: [{ from: './templates/**/*', to: './templates' }],
+      assets: [
+        { from: './templates/**/*', to: './templates' },
+        {
+          from: './templates/base/.prettierrc.template',
+          to: './templates/base',
+        },
+      ],
     }),
   ];
   if (options.watch) {

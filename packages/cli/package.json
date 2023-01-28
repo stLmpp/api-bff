@@ -23,6 +23,7 @@
     "esbuild": "^0.17.4",
     "fast-glob": "~3.2.12",
     "fs-extra": "^11.1.0",
+    "handlebars": "^4.7.7",
     "inquirer": "^9.1.4",
     "ora": "^6.1.2",
     "rimraf": "^4.1.2",

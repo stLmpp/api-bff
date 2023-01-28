@@ -1,5 +1,5 @@
 {
-  "name": "{projectName}",
+  "name": "{{ projectName }}",
   "version": "1.0.0",
   "type": "module",
   "engines": {
@@ -10,11 +10,13 @@
     "build": "bff build"
   },
   "dependencies": {
-    "@api-bff/core": "~{coreVersion}",
-    "zod": "{zodVersion}"
+  {{#each dependencies }}
+    "{{ this.name }}": "{{ this.version }}"{{#unless @last}},{{/unless}}
+  {{/each}}
   },
   "devDependencies": {
-    "@api-bff/cli": "~{cliVersion}",
-    "typescript": "{typescriptVersion}"
+  {{#each devDependencies}}
+    "{{ this.name }}": "{{ this.version }}"{{#unless @last}},{{/unless}}
+  {{/each}}
   }
 }
