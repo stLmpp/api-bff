@@ -15,8 +15,7 @@ async function replaceFileWithParams(
   file: string,
   params: TemplateParams
 ): Promise<string> {
-  const template = handlebars.compile(file);
-  return template(params);
+  return handlebars.compile(file)(params);
 }
 
 export async function createFileFromTemplate(

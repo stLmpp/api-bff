@@ -22,6 +22,7 @@ export function installDependencies(
       },
       (error) => {
         if (error) {
+          // TODO improve error message
           reject(error);
         } else {
           resolve();
