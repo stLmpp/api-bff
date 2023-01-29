@@ -2,17 +2,11 @@ import { defineConfig } from '@api-bff/core';
 
 export default defineConfig({
   prefix: '{{ prefix }}',
-{{#if skipOpenapi}}
-  openapi: false,
-{{else}}
   openapi: {
     title: '{{ projectName }}',
   },
-{{/if}}
-{{#unless skipCaching}}
   caching: {
     strategy: 'file',
     ttl: 15_000,
   },
-{{/unless}}
 });

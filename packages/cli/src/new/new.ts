@@ -5,6 +5,7 @@ import { Command, Option } from 'commander';
 import { pathExists } from 'fs-extra';
 import inquirer from 'inquirer';
 import ora from 'ora';
+import { simpleGit } from 'simple-git';
 import { z } from 'zod';
 
 import BasePackageJson from '../../../../package.json';
@@ -30,11 +31,10 @@ const HttpClientChoices = HttpClientSchema.options.map((item) => item.value);
 const NewCommandOptionsSchema = z.object({
   prefix: z.string(),
   packageManager: PackageManagerSchema.optional(),
-  skipPrettier: z.boolean().optional().default(false),
-  skipOpenapi: z.boolean().optional().default(false),
-  skipEslint: z.boolean().optional().default(false),
-  skipCaching: z.boolean().optional().default(false),
+  prettier: z.boolean().optional(),
+  eslint: z.boolean().optional(),
   httpClient: HttpClientSchema.optional(),
+  skipGit: z.boolean().optional().default(false),
 });
 
 const httpClientDependency = {
@@ -60,10 +60,9 @@ export const newCommand = new Command('new')
       'Package manager used by your application'
     ).choices(PackageManagerChoices)
   )
-  .option('--skip-prettier [boolean]', 'Skip prettier')
-  .option('--skip-eslint [boolean]', 'Skip eslint')
-  .option('--skip-openapi [boolean]', 'Skip openapi')
-  .option('--skip-caching [boolean]', 'Skip caching')
+  .option('--prettier [boolean]', 'Add prettier')
+  .option('--eslint [boolean]', 'Add eslint')
+  .option('--skip-git [boolean]', 'Skip git initialization')
   .addOption(
     new Option('--http-client <string>', 'Http client used in the BFF').choices(
       HttpClientChoices
@@ -72,17 +71,15 @@ export const newCommand = new Command('new')
   .action(async (projectName: string, unparsedOptions) => {
     const options = await NewCommandOptionsSchema.parseAsync(unparsedOptions);
     if (!projectName) {
-      const result = await inquirer.prompt([
-        {
-          name: 'projectName',
-          type: 'input',
-          message: () => `Project name: `,
-          validate: (arg) =>
-            /^[a-zA-Z_-]+(\d|[a-zA-Z_-])+?/.test(String(arg)) ||
-            'Project name must start with a letter and only contain letters and numbers',
-        },
-      ]);
-      projectName = result.projectName;
+      const { _projectName } = await inquirer.prompt({
+        name: '_projectName',
+        type: 'input',
+        message: () => `Project name: `,
+        validate: (arg) =>
+          /^[a-zA-Z_-]+(\d|[a-zA-Z_-])+?/.test(String(arg)) ||
+          'Project name must start with a letter and only contain letters and numbers',
+      });
+      projectName = _projectName;
     }
     const spinner = ora();
     spinner.start(`Checking if folder "${projectName}" already exists`);
@@ -97,35 +94,26 @@ export const newCommand = new Command('new')
     }
     spinner.stop();
     if (!options.packageManager) {
-      const result = await inquirer.prompt([
-        {
-          name: 'packageManager',
-          type: 'list',
-          choices: () => PackageManagerChoices,
-          message: () => 'Choose your package manager',
-        },
-      ]);
-      options.packageManager = PackageManagerSchema.parse(
-        result.packageManager
-      );
+      const { packageManager } = await inquirer.prompt({
+        name: 'packageManager',
+        type: 'list',
+        choices: () => PackageManagerChoices,
+        message: () => 'Choose your package manager',
+      });
+      options.packageManager = PackageManagerSchema.parse(packageManager);
     }
     if (!options.httpClient) {
-      const result = await inquirer.prompt([
-        {
-          name: 'httpClient',
-          type: 'list',
-          choices: () => HttpClientChoices,
-          message: () => 'Choose the Http client used to make requests',
-        },
-      ]);
-      options.httpClient = HttpClientSchema.parse(result.httpClient);
+      const { httpClient } = await inquirer.prompt({
+        name: 'httpClient',
+        type: 'list',
+        choices: () => HttpClientChoices,
+        message: () => 'Choose the Http client used to make requests',
+      });
+      options.httpClient = HttpClientSchema.parse(httpClient);
     }
     // TODO add unit testing
-    // TODO add eslint
     // TODO add gitignore
-    spinner.start(`Creating your project`);
     const excludedFiles: string[] = [];
-    await mkdir(projectName);
     const dependencies = [
       { name: '@api-bff/core', version: `~${CLIPackageJson.version}` },
       { name: 'zod', version: CLIPackageJson.dependencies.zod },
@@ -142,7 +130,15 @@ export const newCommand = new Command('new')
       dependencies.push(...httpClientDependencies.dependencies);
       devDependencies.push(...httpClientDependencies.devDependencies);
     }
-    if (!options.skipPrettier) {
+    if (typeof options.prettier === 'undefined') {
+      const { prettier } = await inquirer.prompt({
+        name: 'prettier',
+        type: 'confirm',
+        message: () => 'Add prettier?',
+      });
+      options.prettier = prettier;
+    }
+    if (options.prettier) {
       devDependencies.push({
         name: 'prettier',
         version: BasePackageJson.devDependencies.prettier,
@@ -150,6 +146,38 @@ export const newCommand = new Command('new')
     } else {
       excludedFiles.push('.prettierrc');
     }
+    if (typeof options.eslint === 'undefined') {
+      const { eslint } = await inquirer.prompt({
+        name: 'eslint',
+        type: 'confirm',
+        message: () => 'Add eslint?',
+      });
+      options.eslint = eslint;
+    }
+    if (options.eslint) {
+      devDependencies.push(
+        {
+          name: 'eslint',
+          version: BasePackageJson.devDependencies.eslint,
+        },
+        {
+          name: '@typescript-eslint/eslint-plugin',
+          version:
+            BasePackageJson.devDependencies['@typescript-eslint/eslint-plugin'],
+        },
+        {
+          name: '@typescript-eslint/parser',
+          version: BasePackageJson.devDependencies['@typescript-eslint/parser'],
+        }
+      );
+    } else {
+      excludedFiles.push('.eslintrc.js');
+    }
+    if (options.skipGit) {
+      excludedFiles.push('.gitignore');
+    }
+    spinner.start(`Creating your project`);
+    await mkdir(projectName);
     await createTemplateFiles(
       'base',
       {
@@ -161,8 +189,6 @@ export const newCommand = new Command('new')
           depA.name.localeCompare(depB.name)
         ),
         prefix: options.prefix,
-        skipOpenapi: options.skipOpenapi,
-        skipCaching: options.skipCaching,
       },
       {
         exclude: (path) => {
@@ -179,6 +205,16 @@ export const newCommand = new Command('new')
     });
     spinner.start('Installing dependencies');
     await installDependencies(resolve(projectName), options.packageManager);
+    if (!options.skipGit) {
+      const git = simpleGit(projectName);
+      try {
+        await git.status();
+        // Probably is a git repository already
+      } catch {
+        await git.init();
+      }
+    }
+
     spinner.stopAndPersist({
       prefixText: '✅',
       text: 'Dependencies installed',

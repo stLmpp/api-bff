@@ -22,13 +22,10 @@ export default defineConfig((options) => {
   const plugins = [
     nodeExternalsPlugin(),
     copy({
-      assets: [
-        { from: './templates/**/*', to: './templates' },
-        {
-          from: './templates/base/.prettierrc.template',
-          to: './templates/base',
-        },
-      ],
+      assets: [{ from: './templates/**/*', to: './templates' }],
+      globbyOptions: {
+        dot: true,
+      },
     }),
   ];
   if (options.watch) {
