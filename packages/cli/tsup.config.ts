@@ -30,6 +30,7 @@ export default defineConfig((options) => {
   ];
   if (options.watch) {
     plugins.push(npmLinkPlugin());
+    options.watch = ['**/*.{ts,template}'];
   }
   return {
     entry: ['cli.ts'],

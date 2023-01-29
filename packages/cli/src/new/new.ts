@@ -35,6 +35,7 @@ const NewCommandOptionsSchema = z.object({
   eslint: z.boolean().optional(),
   httpClient: HttpClientSchema.optional(),
   skipGit: z.boolean().optional().default(false),
+  testing: z.boolean().optional(),
 });
 
 const httpClientDependency = {
@@ -62,6 +63,7 @@ export const newCommand = new Command('new')
   )
   .option('--prettier [boolean]', 'Add prettier')
   .option('--eslint [boolean]', 'Add eslint')
+  .option('--testing [boolean]', 'Add unit testing with Vitest')
   .option('--skip-git [boolean]', 'Skip git initialization')
   .addOption(
     new Option('--http-client <string>', 'Http client used in the BFF').choices(
@@ -111,9 +113,7 @@ export const newCommand = new Command('new')
       });
       options.httpClient = HttpClientSchema.parse(httpClient);
     }
-    // TODO add unit testing
-    // TODO add gitignore
-    const excludedFiles: string[] = [];
+    const excludedFiles: (string | RegExp)[] = [];
     const dependencies = [
       { name: '@api-bff/core', version: `~${CLIPackageJson.version}` },
       { name: 'zod', version: CLIPackageJson.dependencies.zod },
@@ -171,7 +171,26 @@ export const newCommand = new Command('new')
         }
       );
     } else {
-      excludedFiles.push('.eslintrc.js');
+      excludedFiles.push('.eslintrc.cjs');
+    }
+    if (typeof options.testing === 'undefined') {
+      const { testing } = await inquirer.prompt({
+        name: 'testing',
+        type: 'confirm',
+        message: () => 'Add unit testing? (Vitest)',
+      });
+      options.testing = testing;
+    }
+    if (options.testing) {
+      devDependencies.push(
+        {
+          name: 'vitest',
+          version: '~0.28.3',
+        },
+        { name: '@vitest/coverage-c8', version: '~0.28.3' }
+      );
+    } else {
+      excludedFiles.push('vitest.config.ts', /\.spec.ts.template$/);
     }
     if (options.skipGit) {
       excludedFiles.push('.gitignore');
@@ -189,13 +208,16 @@ export const newCommand = new Command('new')
           depA.name.localeCompare(depB.name)
         ),
         prefix: options.prefix,
+        testing: options.testing,
       },
       {
         exclude: (path) => {
           if (!excludedFiles.length) {
             return false;
           }
-          return excludedFiles.some((file) => path.includes(file));
+          return excludedFiles.some((file) =>
+            typeof file === 'string' ? path.includes(file) : file.test(path)
+          );
         },
       }
     );

@@ -6,6 +6,7 @@
     "packages/*",
     "apps/*"
   ],
+  "type": "module",
   "scripts": {
     "build": "turbo run build",
     "watch": "turbo run watch",

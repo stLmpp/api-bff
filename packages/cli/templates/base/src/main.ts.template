@@ -1,6 +1,7 @@
 import { createApplication } from '@api-bff/core';
 
-createApplication().then((app) => {
-  app.listen(3000);
-  console.log('Listening on http://localhost:3000');
-});
+export const app = await createApplication();
+const PORT = 3000;
+app.listen(PORT);
+console.log(`Listening on http://localhost:${PORT}`);
+
