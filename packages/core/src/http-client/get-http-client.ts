@@ -12,18 +12,18 @@ function getErrorMessage(client: string): string {
 }
 
 const factoryMap = {
-  got: () =>
-    import('got')
-      .then((m) => new HttpClientGot(m.got))
-      .catch((error) => {
+  got: async () =>
+    new HttpClientGot(
+      await import('got').catch((error) => {
         throw new Error(getErrorMessage('got'), { cause: error });
-      }),
-  axios: () =>
-    import('axios')
-      .then((m) => new HttpClientAxios(m.default))
-      .catch((error) => {
+      })
+    ),
+  axios: async () =>
+    new HttpClientAxios(
+      await import('axios').catch((error) => {
         throw new Error(getErrorMessage('axios'), { cause: error });
-      }),
+      })
+    ),
   fetch: () => new HttpClientFetch(),
 } satisfies Record<HttpClientType, () => OrPromise<HttpClient>>;
 

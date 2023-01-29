@@ -7,9 +7,12 @@ import { methodHasBody } from './method-has-body.js';
 import { validateBody } from './validate-body.js';
 
 export class HttpClientAxios extends HttpClient {
-  constructor(private readonly axios: import('axios').Axios) {
+  constructor(private readonly axios: typeof import('axios')) {
     super();
+    this._http = axios.default;
   }
+
+  private readonly _http: import('axios').Axios;
 
   async request(
     url: URL,
@@ -25,7 +28,7 @@ export class HttpClientAxios extends HttpClient {
     }
     let response: Response;
     try {
-      const axiosResponse = await this.axios.request(axiosOptions);
+      const axiosResponse = await this._http.request(axiosOptions);
       const body = validateBody(axiosResponse.data);
       response = new Response(body, {
         headers: formatHeaders(axiosResponse.headers),
@@ -33,7 +36,7 @@ export class HttpClientAxios extends HttpClient {
         statusText: axiosResponse.statusText,
       });
     } catch (error) {
-      if (error instanceof (await import('axios').then((m) => m.AxiosError))) {
+      if (error instanceof this.axios.AxiosError) {
         // TODO optimize import
         const statusCode =
           error.response?.status ??

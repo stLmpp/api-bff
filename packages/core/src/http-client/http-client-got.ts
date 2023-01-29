@@ -5,10 +5,12 @@ import { methodHasBody } from './method-has-body.js';
 import { validateBody } from './validate-body.js';
 
 export class HttpClientGot extends HttpClient {
-  constructor(private readonly got: import('got').Got) {
+  constructor(private readonly got: typeof import('got')) {
     super();
+    this._http = got.got;
   }
 
+  private readonly _http: import('got').Got;
   async request(
     url: URL,
     options: HttpClientRequestOptions
@@ -24,7 +26,7 @@ export class HttpClientGot extends HttpClient {
         gotOptions.json = options.body;
       }
     }
-    const response = await this.got(url, gotOptions);
+    const response = await this._http(url, gotOptions);
     const body = validateBody(response.body);
     return new Response(body, {
       headers: formatHeaders(response.headers),
