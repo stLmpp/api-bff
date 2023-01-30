@@ -11,25 +11,21 @@ export class MemoryCaching extends CachingStrategy {
     if (!cached) {
       return;
     }
-    const { expiry, value } = cached;
-    if (!ttl || !expiry) {
+    const { date, value } = cached;
+    if (!ttl) {
       return value;
     }
     const now = new Date().getTime();
-    if (now > expiry) {
+    if (now > date + ttl) {
       await this.invalidate(key);
       return;
     }
     return value;
   }
 
-  async set(
-    key: string,
-    value: unknown,
-    { ttl }: ConfigCaching
-  ): Promise<void> {
+  async set(key: string, value: unknown): Promise<void> {
     this._cache.set(key, {
-      expiry: ttl ? new Date().getTime() + ttl : null,
+      date: new Date().getTime(),
       value,
     });
   }

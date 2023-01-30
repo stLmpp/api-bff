@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const CachingDataSchema = z.object({
-  expiry: z.number().nullable(),
+  date: z.number(),
   value: z.any(),
 });
 

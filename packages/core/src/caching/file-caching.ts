@@ -7,6 +7,13 @@ import { pathExists } from '../path-exists.js';
 import { type CachingData, CachingDataSchema } from './caching-data.schema.js';
 import { CachingStrategy } from './caching-strategy.js';
 
+// prettier-ignore
+export const RESERVED_FILENAMES = [
+  'CON', 'PRN', 'AUX', 'NUL',
+  'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
+  'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9',
+] as const;
+
 export class FileCaching extends CachingStrategy {
   private async _createFolder(path: string): Promise<void> {
     const exists = await pathExists(path);
@@ -28,30 +35,9 @@ export class FileCaching extends CachingStrategy {
       .set('?', '--_')
       .set('*', '__-');
 
-  private readonly _reservedNames: ReadonlySet<string> = new Set([
-    'CON',
-    'PRN',
-    'AUX',
-    'NUL',
-    'COM1',
-    'COM2',
-    'COM3',
-    'COM4',
-    'COM5',
-    'COM6',
-    'COM7',
-    'COM8',
-    'COM9',
-    'LPT1',
-    'LPT2',
-    'LPT3',
-    'LPT4',
-    'LPT5',
-    'LPT6',
-    'LPT7',
-    'LPT8',
-    'LPT9',
-  ]);
+  private readonly _reservedNames: ReadonlySet<string> = new Set(
+    RESERVED_FILENAMES
+  );
 
   private _sanitizeKey(key: string): string {
     for (const [character, replacement] of this._characterReplacements) {
@@ -86,12 +72,12 @@ export class FileCaching extends CachingStrategy {
       await this.invalidate(key, options);
       return;
     }
-    const { expiry, value } = cached;
-    if (!ttl || !expiry) {
+    const { date, value } = cached;
+    if (!ttl) {
       return value;
     }
     const now = new Date().getTime();
-    if (now > expiry) {
+    if (now > date + ttl) {
       await this.invalidate(key, options);
       return;
     }
@@ -101,11 +87,11 @@ export class FileCaching extends CachingStrategy {
   async set(
     key: string,
     value: unknown,
-    { path, ttl }: ConfigCaching
+    { path }: ConfigCaching
   ): Promise<void> {
     const cache: CachingData = {
       value,
-      expiry: ttl ? new Date().getTime() + ttl : null,
+      date: new Date().getTime(),
     };
     await this._createFolder(path);
     await writeFile(this._getFilePath(path, key), JSON.stringify(cache));
