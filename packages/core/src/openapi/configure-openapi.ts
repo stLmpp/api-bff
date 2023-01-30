@@ -1,4 +1,5 @@
 import { type Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { type OpenAPIObject, type PathsObject } from 'openapi3-ts';
 import { serve, setup } from 'swagger-ui-express';
 
@@ -30,14 +31,21 @@ export async function configureOpenapi(
     servers: [{ url: prefix ?? '/' }],
   };
   console.log(`Registering end-point: [GET] ${prefix ?? ''}${openapi.path}`);
-  router.use(
-    '/help',
-    serve,
-    setup(openapiObject, {
-      swaggerOptions: {
-        displayRequestDuration: true,
-        persistAuthorization: true,
-      },
-    })
+  console.log(
+    `Registering end-point: [GET] ${prefix ?? ''}${openapi.path}/swagger.json`
   );
+  router
+    .get(`${openapi.path}/swagger.json`, (_, res) => {
+      res.status(StatusCodes.OK).send(openapiObject);
+    })
+    .use(
+      openapi.path,
+      serve,
+      setup(openapiObject, {
+        swaggerOptions: {
+          displayRequestDuration: true,
+          persistAuthorization: true,
+        },
+      })
+    );
 }
