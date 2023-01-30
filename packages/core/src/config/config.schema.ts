@@ -18,7 +18,7 @@ export const ConfigSchema = z.object(
     httpClient: z
       .union([HttpClientTypeSchema, z.instanceof(HttpClient)])
       .optional()
-      .default('got')
+      .default('fetch')
       .transform((type) => getHttpClientConfig(type)),
   },
   {

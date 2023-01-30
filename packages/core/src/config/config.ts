@@ -9,12 +9,15 @@ import {
   ConfigSchema,
 } from './config.schema.js';
 
+let _config: Config | null = null;
+let _hash = 0;
+
 async function parseAndAssertConfig(config: unknown): Promise<Config> {
   const zodParsed = await ConfigSchema.safeParseAsync(config);
   if (!zodParsed.success) {
     const errors = fromZodErrorToErrorResponseObjects(zodParsed.error, 'body');
     throw new Error(
-      `API BFF Config not valid.\n` +
+      `API BFF Config is invalid.\n` +
         `Errors:\n` +
         `${errors
           .map((error) => `- "${error.path}" ${error.message}`)
@@ -25,24 +28,28 @@ async function parseAndAssertConfig(config: unknown): Promise<Config> {
 }
 
 async function _getConfig() {
-  const filename = pathToFileURL(join(process.cwd(), 'dist/api-bff.config.js'));
+  const filename = pathToFileURL(join(process.cwd(), `dist/api-bff.config.js`));
+  if (!PROD) {
+    // Hash to invalidate the dynamic import caching
+    // This is mostly done to help in unit testing
+    filename.hash = String(_hash);
+  }
+  let file: { default?: unknown };
   try {
-    const file = await import(filename.toString());
-    if (!file.default) {
-      throw new Error(
-        'API BFF Config does not have a default export.\n' +
-          'Please follow the template below\n\n' +
-          `import { defineConfig } from 'api-bff';\n\n` +
-          'export default defineConfig({}); // Your config here\n\n'
-      );
-    }
-    return parseAndAssertConfig(file.default);
+    file = await import(filename.toString());
   } catch (error) {
     throw new Error(`Could not find API BFF Config.\n${error.message}`);
   }
+  if (!file.default) {
+    throw new Error(
+      'API BFF Config does not have a default export.\n' +
+        'Please follow the template below\n\n' +
+        `import { defineConfig } from 'api-bff';\n\n` +
+        'export default defineConfig({}); // Your config here\n\n'
+    );
+  }
+  return parseAndAssertConfig(file.default);
 }
-
-let _config: Config | null = null;
 
 export async function getConfig() {
   if (!_config) {
@@ -53,4 +60,11 @@ export async function getConfig() {
 
 export function defineConfig(config: ConfigInput) {
   return config;
+}
+
+export function resetConfigCache() {
+  _config = null;
+  if (!PROD) {
+    _hash++;
+  }
 }

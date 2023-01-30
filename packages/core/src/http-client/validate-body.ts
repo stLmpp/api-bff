@@ -3,11 +3,7 @@ export function validateBody(body: unknown): string | null {
     return null;
   }
   if (Buffer.isBuffer(body)) {
-    try {
-      return validateBody(body.toString());
-    } catch {
-      return null;
-    }
+    return validateBody(body.toString());
   }
   if (typeof body === 'string') {
     try {

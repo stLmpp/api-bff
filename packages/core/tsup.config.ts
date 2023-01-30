@@ -8,4 +8,8 @@ export default defineConfig({
   platform: 'node',
   sourcemap: true,
   minify: true,
+  define: {
+    PROD: 'true',
+  },
+  tsconfig: 'tsconfig.build.json',
 });

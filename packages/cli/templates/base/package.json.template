@@ -5,6 +5,7 @@
   "engines": {
     "node": ">=18"
   },
+  "sideEffects": false,
   "scripts": {
     "serve": "bff serve",
     "build": "bff build"

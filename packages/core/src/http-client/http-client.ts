@@ -11,4 +11,12 @@ export abstract class HttpClient {
     url: URL,
     options: HttpClientRequestOptions
   ): Promise<Response>;
+
+  // TODO add get, put, post, patch, delete
+  // get<T extends ZodType>(
+  //   url: URL | string,
+  //   options: Omit<HttpClientRequestOptions, 'body' | 'method'> & {
+  //     responseValidation?: T;
+  //   }
+  // ): Promise<{ status: number; data: z.infer<T>; success: boolean; }> {}
 }

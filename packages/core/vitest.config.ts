@@ -18,4 +18,9 @@ export default defineConfig({
     exclude: ['**/*.schema.ts', 'node_modules'],
     include: ['**/*.spec.ts'],
   },
+  esbuild: {
+    define: {
+      PROD: 'false',
+    },
+  },
 });
