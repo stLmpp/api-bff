@@ -19,8 +19,8 @@ describe('memory-caching', () => {
   });
 
   beforeEach(async () => {
-    await service.set('url1', {}, config);
-    await service.set('url2', { id: 1 }, config);
+    await service.set('url1', {});
+    await service.set('url2', { id: 1 });
   });
 
   describe('invalidade', () => {
@@ -42,7 +42,7 @@ describe('memory-caching', () => {
   });
 
   it('should set value', async () => {
-    await service.set('url3', { id: 3 }, config);
+    await service.set('url3', { id: 3 });
     expect(await service.get('url3', config)).toEqual({ id: 3 });
   });
 
@@ -59,7 +59,7 @@ describe('memory-caching', () => {
       now: new Date(2023, 0, 27, 0, 0, 0, 0),
     });
     const newConfig = { ...config, ttl: 15_000 };
-    await service.set('url4', { id: 4 }, newConfig);
+    await service.set('url4', { id: 4 });
     expect(await service.get('url4', newConfig)).toEqual({ id: 4 });
     vi.advanceTimersByTime(15_000);
     expect(await service.get('url4', newConfig)).toEqual({ id: 4 });
