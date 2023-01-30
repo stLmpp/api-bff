@@ -34,7 +34,10 @@ export async function configureOpenapi(
     '/help',
     serve,
     setup(openapiObject, {
-      swaggerOptions: {},
+      swaggerOptions: {
+        displayRequestDuration: true,
+        persistAuthorization: true,
+      },
     })
   );
 }
