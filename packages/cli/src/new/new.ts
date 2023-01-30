@@ -1,6 +1,7 @@
 import { mkdir, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
+import { HttpClientTypeSchema } from '@api-bff/core';
 import { Command, Option } from 'commander';
 import { pathExists } from 'fs-extra';
 import inquirer from 'inquirer';
@@ -8,47 +9,34 @@ import ora from 'ora';
 import { simpleGit } from 'simple-git';
 import { z } from 'zod';
 
-import BasePackageJson from '../../../../package.json';
-import CLIPackageJson from '../../package.json';
 import { createTemplateFiles } from '../template/create-file-from-template.js';
 
+import {
+  type Dependency,
+  DependencyMap,
+  HttpClientDependencies,
+} from './dependencies.js';
 import {
   installDependencies,
   PackageManagerSchema,
 } from './package-manager.js';
 
-const HttpClientSchema = z.union([
-  z.literal('fetch'),
-  z.literal('axios'),
-  z.literal('got'),
-]);
-
 const PackageManagerChoices = PackageManagerSchema.options.map(
   (item) => item.value
 );
-const HttpClientChoices = HttpClientSchema.options.map((item) => item.value);
+const HttpClientChoices = HttpClientTypeSchema.options.map(
+  (item) => item.value
+);
 
 const NewCommandOptionsSchema = z.object({
   prefix: z.string(),
   packageManager: PackageManagerSchema.optional(),
   prettier: z.boolean().optional(),
   eslint: z.boolean().optional(),
-  httpClient: HttpClientSchema.optional(),
+  httpClient: HttpClientTypeSchema.optional(),
   skipGit: z.boolean().optional().default(false),
   testing: z.boolean().optional(),
 });
-
-const httpClientDependency = {
-  axios: {
-    dependencies: [{ name: 'axios', version: '~1.2.6' }],
-    devDependencies: [],
-  },
-  got: {
-    dependencies: [{ name: 'got', version: '~12.5.3' }],
-    devDependencies: [],
-  },
-  fetch: null,
-} as const;
 
 export const newCommand = new Command('new')
   .alias('n')
@@ -111,21 +99,18 @@ export const newCommand = new Command('new')
         choices: () => HttpClientChoices,
         message: () => 'Choose the Http client used to make requests',
       });
-      options.httpClient = HttpClientSchema.parse(httpClient);
+      options.httpClient = HttpClientTypeSchema.parse(httpClient);
     }
     const excludedFiles: (string | RegExp)[] = [];
-    const dependencies = [
-      { name: '@api-bff/core', version: `~${CLIPackageJson.version}` },
-      { name: 'zod', version: CLIPackageJson.dependencies.zod },
+    const dependencies: Dependency[] = [
+      DependencyMap['@api-bff/core'],
+      DependencyMap.zod,
     ];
-    const devDependencies = [
-      { name: '@api-bff/cli', version: `~${CLIPackageJson.version}` },
-      {
-        name: 'typescript',
-        version: BasePackageJson.devDependencies.typescript,
-      },
+    const devDependencies: Dependency[] = [
+      DependencyMap['@api-bff/cli'],
+      DependencyMap.typescript,
     ];
-    const httpClientDependencies = httpClientDependency[options.httpClient];
+    const httpClientDependencies = HttpClientDependencies[options.httpClient];
     if (httpClientDependencies) {
       dependencies.push(...httpClientDependencies.dependencies);
       devDependencies.push(...httpClientDependencies.devDependencies);
@@ -139,10 +124,7 @@ export const newCommand = new Command('new')
       options.prettier = prettier;
     }
     if (options.prettier) {
-      devDependencies.push({
-        name: 'prettier',
-        version: BasePackageJson.devDependencies.prettier,
-      });
+      devDependencies.push(DependencyMap.prettier);
     } else {
       excludedFiles.push('.prettierrc');
     }
@@ -156,19 +138,9 @@ export const newCommand = new Command('new')
     }
     if (options.eslint) {
       devDependencies.push(
-        {
-          name: 'eslint',
-          version: BasePackageJson.devDependencies.eslint,
-        },
-        {
-          name: '@typescript-eslint/eslint-plugin',
-          version:
-            BasePackageJson.devDependencies['@typescript-eslint/eslint-plugin'],
-        },
-        {
-          name: '@typescript-eslint/parser',
-          version: BasePackageJson.devDependencies['@typescript-eslint/parser'],
-        }
+        DependencyMap.eslint,
+        DependencyMap['@typescript-eslint/eslint-plugin'],
+        DependencyMap['@typescript-eslint/parser']
       );
     } else {
       excludedFiles.push('.eslintrc.cjs');
@@ -183,11 +155,8 @@ export const newCommand = new Command('new')
     }
     if (options.testing) {
       devDependencies.push(
-        {
-          name: 'vitest',
-          version: '~0.28.3',
-        },
-        { name: '@vitest/coverage-c8', version: '~0.28.3' }
+        DependencyMap.vitest,
+        DependencyMap['@vitest/coverage-c8']
       );
     } else {
       excludedFiles.push('vitest.config.ts', /\.spec.ts.template$/);

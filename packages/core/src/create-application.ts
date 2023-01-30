@@ -40,7 +40,10 @@ export async function createApplication(): Promise<Express> {
       };
     }
   }
-  await configureOpenapi(router, openapiPaths);
-  server.use(config.prefix ?? '/', router);
+  const routerOpenapi = Router();
+  await configureOpenapi(routerOpenapi, openapiPaths);
+  server
+    .use(config.prefix ?? '/', routerOpenapi)
+    .use(config.prefix ?? '/', router);
   return server.use(notFoundMiddleware()).use(errorMiddleware());
 }

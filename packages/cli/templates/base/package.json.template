@@ -6,9 +6,14 @@
     "node": ">=18"
   },
   "sideEffects": false,
+  "main": "dist/src/main.js",
   "scripts": {
+    "start": "node ./dist/src/main.js",
     "serve": "bff serve",
-    "build": "bff build"
+    "build": "bff build"{{#if testing}},
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  {{/if}}
   },
   "dependencies": {
   {{#each dependencies }}

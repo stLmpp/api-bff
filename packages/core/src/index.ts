@@ -13,6 +13,7 @@ export {
 export { HttpClientAxios } from './http-client/http-client-axios.js';
 export { HttpClientFetch } from './http-client/http-client-fetch.js';
 export { HttpClientGot } from './http-client/http-client-got.js';
+export { HttpClientTypeSchema } from './http-client/http-client-type.schema.js';
 export { schema } from './openapi/schema.js';
 export { env } from './api-config/env.js';
 export { fixed } from './api-config/fixed.js';

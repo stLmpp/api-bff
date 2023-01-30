@@ -71,7 +71,7 @@ export async function initApiConfig(
   }
   const apiConfig = parsedApiConfig.data;
   const { host, path: pathname, request, response } = parsedApiConfig.data;
-  const endPoint = reqPath.join('/');
+  const endPoint = `${reqPath.join('/')}/`;
   const operation = globalConfig.openapi ? getOperation(apiConfig) : null;
   const { caching, hasCachingConfig } = await getApiCachingConfig(apiConfig);
   const shouldCache = method === 'GET' && hasCachingConfig;
