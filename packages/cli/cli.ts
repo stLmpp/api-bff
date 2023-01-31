@@ -13,4 +13,4 @@ program
   .addCommand(newCommand)
   .addCommand(devCommand)
   .addCommand(buildCommand)
-  .parse();
+  .parseAsync();

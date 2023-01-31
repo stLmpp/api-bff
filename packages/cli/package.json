@@ -16,9 +16,12 @@
   ],
   "scripts": {
     "build": "tsup",
-    "watch": "tsup --watch"
+    "watch": "tsup --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
   },
   "dependencies": {
+    "@api-bff/core": "~0.1.0",
     "commander": "^10.0.0",
     "esbuild": "^0.17.4",
     "fast-glob": "~3.2.12",
@@ -28,14 +31,17 @@
     "ora": "^6.1.2",
     "rimraf": "^4.1.2",
     "simple-git": "^3.16.0",
-    "zod": "~3.20.2",
-    "@api-bff/core": "~0.1.0"
+    "zod": "~3.20.2"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",
     "@types/inquirer": "^9.0.3",
+    "@types/mock-fs": "^4.13.1",
+    "@vitest/coverage-c8": "^0.28.3",
     "esbuild-node-externals": "^1.6.0",
     "esbuild-plugin-copy": "^2.0.2",
-    "tsup": "~6.5.0"
+    "mock-fs": "^5.2.0",
+    "tsup": "~6.5.0",
+    "vitest": "^0.28.3"
   }
 }

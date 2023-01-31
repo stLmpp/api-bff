@@ -41,5 +41,9 @@ export default defineConfig((options) => {
     minifyIdentifiers: false,
     minifySyntax: true,
     minifyWhitespace: true,
+    define: {
+      PROD: 'true',
+    },
+    tsconfig: 'tsconfig.build.json',
   };
 });
