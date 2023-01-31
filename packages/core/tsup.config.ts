@@ -7,9 +7,11 @@ export default defineConfig({
   format: 'esm',
   platform: 'node',
   sourcemap: true,
-  minify: true,
   define: {
     PROD: 'true',
   },
   tsconfig: 'tsconfig.build.json',
+  minifyIdentifiers: false,
+  minifySyntax: true,
+  minifyWhitespace: true,
 });

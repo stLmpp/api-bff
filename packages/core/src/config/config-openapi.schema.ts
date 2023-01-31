@@ -48,6 +48,33 @@ export const ConfigOpenapiObjectSchema = z.object({
     .optional(),
   externalDocs: ConfigOpenapiObjectExternalDocsSchema.optional(),
   security: z.array(z.record(z.string(), z.array(z.string()))).optional(),
+  servers: z
+    .array(
+      z.object({
+        url: z.string().url().or(z.literal('/')),
+        description: z.string().optional(),
+        variables: z
+          .union([
+            z.record(
+              z.string(),
+              z.object({
+                enum: z
+                  .union([
+                    z.array(z.string()),
+                    z.array(z.number()),
+                    z.array(z.boolean()),
+                  ])
+                  .optional(),
+                default: z.union([z.string(), z.number(), z.boolean()]),
+                description: z.string().optional(),
+              })
+            ),
+            z.record(z.string().startsWith('x-'), z.any()),
+          ])
+          .optional(),
+      })
+    )
+    .optional(),
 });
 
 export type ConfigOpenapiObject = z.infer<typeof ConfigOpenapiObjectSchema>;

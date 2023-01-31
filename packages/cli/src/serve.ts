@@ -34,10 +34,20 @@ const serverPlugin = () =>
           prefixText: '✅',
           text: 'Build finished, starting program',
         });
-        nodeProgram = spawn('node', ['dist/src/main.js'], {
-          env: process.env,
-          stdio: 'inherit',
-        });
+        nodeProgram = spawn(
+          'node',
+          [
+            '--enable-source-maps',
+            '--title',
+            'API BFF Dev mode',
+            '--trace-warnings',
+            'dist/src/main.js',
+          ],
+          {
+            env: process.env,
+            stdio: 'inherit',
+          }
+        );
       });
       build.onDispose(() => {
         clearProgram();

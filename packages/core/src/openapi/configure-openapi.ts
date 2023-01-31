@@ -28,7 +28,7 @@ export async function configureOpenapi(
     tags: openapi.tags,
     externalDocs: openapi.externalDocs,
     security: openapi.security,
-    servers: [{ url: prefix ?? '/' }],
+    servers: openapi.servers,
   };
   console.log(`Registering end-point: [GET] ${prefix ?? ''}${openapi.path}`);
   console.log(

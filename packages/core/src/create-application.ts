@@ -33,7 +33,7 @@ export async function createApplication(): Promise<Express> {
     );
     router.use(endPoint, handler);
     if (meta.openapi) {
-      const endPointOpenapi = formatEndPoint(endPoint);
+      const endPointOpenapi = formatEndPoint(finalEndPoint);
       openapiPaths[endPointOpenapi] = {
         ...openapiPaths[endPointOpenapi],
         ...meta.openapi,

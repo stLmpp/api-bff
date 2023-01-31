@@ -10,7 +10,6 @@ const npmLinkPlugin = () =>
     name: 'npm-link',
     setup: (build) => {
       build.onEnd(() => {
-        console.log('on end');
         spawnSync('npm', ['link'], { stdio: 'inherit' });
       });
     },
@@ -38,7 +37,9 @@ export default defineConfig((options) => {
     format: 'esm',
     platform: 'node',
     sourcemap: true,
-    minify: false,
     esbuildPlugins: plugins,
+    minifyIdentifiers: false,
+    minifySyntax: true,
+    minifyWhitespace: true,
   };
 });
