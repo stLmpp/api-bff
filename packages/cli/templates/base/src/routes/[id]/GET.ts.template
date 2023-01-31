@@ -1,19 +1,71 @@
-import { apiConfig } from '@api-bff/core';
+import { apiConfig, env, fixed, StatusCodes } from '@api-bff/core';
 import { z } from 'zod';
 
+// This is an example of a more complex end-point
+// Final end-point: /:id/
 export default apiConfig({
   host: 'jsonplaceholder.typicode.com',
   path: 'todos/:id',
   request: {
+    // This will validate the path params to include an "id"
     validation: {
+      // In this case, the params object isn't really necessary
+      // since the path url already requires it.
+      // Use this object when you need custom validations on the path
+      // params
       params: z.object({
         id: z.string(),
       }),
     },
+    // This will map the received path param "id" to the target path
+    // The typings here will be infered from validation
     mapping: {
+      // Params is a special object here, the possible keys here
+      // are infered from the path url
       params: {
         id: 'id',
       },
+      query: {
+        // This is mapping an "id" from the path params
+        // to a query param called "id-query"
+        'id-query': { param: 'id' },
+      },
+      headers: {
+        // This is mapping an "id" from the path params
+        // to a header called "x-id"
+        // and transforming it into another format
+        'x-id': { param: (param) => `X-ID=${param.id}` },
+        // This is an alias to () => process.env.MY_SUPER_SECRET_API_KEY
+        'x-api-key': env('MY_SUPER_SECRET_API_KEY'),
+        // This is an alias to () => 'This value will be fixed'
+        'x-some-fixed-value': fixed('This value will be fixed'),
+      },
     },
+  },
+  response: {
+    // This will validate the provider response
+    providerValidation: z.object({
+      userId: z.number(),
+      id: z.number(),
+      title: z.string(),
+      completed: z.boolean(),
+    }),
+    // This will validate your final response
+    validation: z.object({
+      idUser: z.number(),
+      id: z.number(),
+      title: z.string(),
+      completed: z.enum(['on', 'off']),
+    }),
+    // This will map the provider response to a different object
+    // The type here is infered from the "validation" step
+    mapping: {
+      idUser: 'userId',
+      id: 'id',
+      title: 'title',
+      completed: (body) => (body.completed ? 'on' : 'off'),
+    },
+    // This will map the possible errors
+    possibleErrors: [StatusCodes.NOT_FOUND],
   },
 });

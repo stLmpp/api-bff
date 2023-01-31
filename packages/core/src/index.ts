@@ -21,6 +21,9 @@ export { forward } from './api-config/forward.js';
 export { createApplication } from './create-application.js';
 export { ErrorResponse } from './error-response.js';
 
+// Libs
+export { StatusCodes } from 'http-status-codes';
+
 // Types
 export type { ApiConfig } from './api-config/api-config.js';
 export type { CachingData } from './caching/caching-data.schema.js';

@@ -1,5 +1,8 @@
 import { defineConfig } from '@api-bff/core';
 
+// This is the global definition of your configs
+// here you can configure the openapi global spec (title, description, licenses, etc),
+// global caching config, http client to be used, etc.
 export default defineConfig({
   prefix: '{{ prefix }}',
   openapi: {

@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { type RequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { type PathItemObject } from 'openapi3-ts';
+import { z, type ZodString } from 'zod';
 
 import { ApiConfigSchema } from './api-config/api-config.schema.js';
 import { getApiCachingConfig } from './caching/get-api-caching-config.js';
@@ -70,11 +71,27 @@ export async function initApiConfig(
     );
   }
   const apiConfig = parsedApiConfig.data;
-  const { host, path: pathname, request, response } = parsedApiConfig.data;
+  const { host, path: pathname, request = {}, response } = parsedApiConfig.data;
   const endPoint = `${reqPath.join('/')}/`;
   const operation = globalConfig.openapi ? getOperation(apiConfig) : null;
   const { caching, hasCachingConfig } = await getApiCachingConfig(apiConfig);
   const shouldCache = method === 'GET' && hasCachingConfig;
+  request.validation ??= {};
+  const paramSchema: Record<string, ZodString> = {};
+  const pathParams: string[] = [];
+  for (const param of reqPath) {
+    if (!param.startsWith(':')) {
+      continue;
+    }
+    const paramName = param.replace(/^:/, '');
+    pathParams.push(paramName);
+    paramSchema[paramName] = z.string();
+  }
+  if (pathParams.length) {
+    request.validation.params = z
+      .object(paramSchema)
+      .merge(request.validation.params ?? z.object({}));
+  }
   return [
     endPoint,
     async (req, res, next) => {
@@ -85,20 +102,20 @@ export async function initApiConfig(
       res.setHeader('x-api-bff', 'true');
       let params = await validateParams({
         data: req.params,
-        schema: request?.validation?.params,
+        schema: request.validation?.params,
         type: 'params',
       });
-      if (request?.mapping?.params) {
+      if (request.mapping?.params) {
         params = await mapRequestParams(request.mapping.params, params, req);
       }
       const formattedQuery = formatQuery(req.query);
       const parsedQuery = await validateParams({
         data: formattedQuery,
         type: 'query',
-        schema: request?.validation?.query,
+        schema: request.validation?.query,
       });
       let query: Record<string, string> = {};
-      if (request?.mapping?.query) {
+      if (request.mapping?.query) {
         query = formatQuery(parsedQuery);
         query = await mapRequestOtherParams(
           request.mapping.query,
@@ -111,10 +128,10 @@ export async function initApiConfig(
       const parsedHeaders = await validateParams({
         data: formattedHeaders,
         type: 'headers',
-        schema: request?.validation?.headers,
+        schema: request.validation?.headers,
       });
       let headers: Record<string, string> = {};
-      if (request?.mapping?.headers) {
+      if (request.mapping?.headers) {
         headers = await mapRequestOtherParams(
           request.mapping.headers,
           formatHeaders(parsedHeaders),
@@ -125,21 +142,17 @@ export async function initApiConfig(
       if (methodHasBody(method)) {
         const parsedBody = await validateParams({
           data: req.body,
-          schema: request?.validation?.body,
+          schema: request.validation?.body,
           type: 'body',
         });
-        if (request?.mapping?.body) {
+        if (request.mapping?.body) {
           body = await mapRequestBody(request.mapping.body, parsedBody, req);
         }
       }
       let newPathName = pathname;
-      for (const paramKey of endPoint.split('/')) {
-        if (!paramKey.startsWith(':')) {
-          continue;
-        }
-        const paramKeyParsed = paramKey.replace(/^:/, '');
-        const paramValue = params[paramKeyParsed];
-        newPathName = newPathName.replace(paramKey, paramValue);
+      for (const paramKey of pathParams) {
+        const paramValue = params[paramKey];
+        newPathName = newPathName.replaceAll(paramKey, paramValue);
       }
       const requestOptions: HttpClientRequestOptions = {
         method,

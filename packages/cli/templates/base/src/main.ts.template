@@ -1,5 +1,8 @@
 import { createApplication } from '@api-bff/core';
 
+// The main.ts file is used to execute your application
+// The template bellow represents a node server
+// But it's possible to use serverless TODO add guide
 export const app = await createApplication();
 const PORT = 3000;
 app.listen(PORT);

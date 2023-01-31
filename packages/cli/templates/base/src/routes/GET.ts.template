@@ -1,5 +1,9 @@
 import { apiConfig } from '@api-bff/core';
 
+// This is an example of a basic end-point
+// This will point to the / end-point
+// And will return the exact same response as the host + path
+// which was configured, without any validations or mappings
 export default apiConfig({
   host: 'jsonplaceholder.typicode.com',
   path: 'todos',
