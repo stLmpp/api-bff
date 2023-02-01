@@ -8,7 +8,7 @@
       "dependsOn": ["^watch"]
     },
     "lint": {
-      "outputs": []
+      "dependsOn": ["^lint"]
     },
     "dev": {
       "cache": false
