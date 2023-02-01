@@ -8,7 +8,12 @@ import { defaultKeyComposer } from '../config/default-key-composer.js';
 
 import { getCachingStrategyConfig } from './caching-resolver.js';
 
-export async function getApiCachingConfig(apiConfig: ApiConfigInternal) {
+export async function getApiCachingConfig(
+  apiConfig: ApiConfigInternal
+): Promise<{
+  hasCachingConfig: boolean;
+  caching: ConfigCaching;
+}> {
   const config = await getConfig();
   const defaultConfig = {
     path: CONFIG_CACHING_PATH_DEFAULT,

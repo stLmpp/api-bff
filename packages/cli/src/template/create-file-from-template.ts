@@ -32,7 +32,7 @@ export async function createFileFromTemplate(
 export async function createFilesFromTemplates(
   templates: Template[],
   params: TemplateParams
-) {
+): Promise<void> {
   await Promise.all(
     templates.map((template) => createFileFromTemplate(template, params))
   );
@@ -42,7 +42,7 @@ export async function createTemplateFiles(
   type: TemplateType,
   params: TemplateParams,
   options: TemplateOptions = {}
-) {
+): Promise<void> {
   const templates = await getTemplates(type, options);
   await createFilesFromTemplates(templates, params);
 }

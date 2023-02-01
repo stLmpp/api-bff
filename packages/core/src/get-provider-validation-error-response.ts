@@ -6,7 +6,7 @@ import { type ErrorResponseErrorObject } from './error-response.schema.js';
 
 export function getProviderValidationErrorResponse(
   errors: ErrorResponseErrorObject[]
-) {
+): ErrorResponse {
   return new ErrorResponse({
     status: StatusCodes.MISDIRECTED_REQUEST,
     message: 'The response from the server has data validation errors',

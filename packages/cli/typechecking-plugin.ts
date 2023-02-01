@@ -2,12 +2,12 @@ import { type ChildProcess, spawn } from 'child_process';
 
 import { type Plugin } from 'esbuild';
 
-export function typecheckingPlugin() {
+export function typecheckingPlugin(): Plugin {
   return {
     name: 'typechecking',
     setup: (build) => {
       let program: ChildProcess | null = null;
-      const clearProgram = () => {
+      const clearProgram = (): void => {
         if (program) {
           program.kill();
           program = null;
@@ -28,5 +28,5 @@ export function typecheckingPlugin() {
         clearProgram();
       });
     },
-  } satisfies Plugin;
+  };
 }

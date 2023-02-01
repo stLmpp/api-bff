@@ -151,11 +151,12 @@ module.exports = {
       },
     ],
     '@typescript-eslint/explicit-function-return-type': [
-      'off',
+      'error',
       {
         allowExpressions: true,
         allowTypedFunctionExpressions: true,
         allowHigherOrderFunctions: true,
+        allowDirectConstAssertionInArrowFunctions: true,
       },
     ],
     'import/order': [

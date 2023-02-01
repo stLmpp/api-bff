@@ -109,7 +109,7 @@ describe('file-caching', () => {
       });
     });
 
-    async function createFiles(files: Record<string, string>) {
+    async function createFiles(files: Record<string, string>): Promise<void> {
       await Promise.all(
         Object.entries(files).map(([key, value]) =>
           writeFile(join('__caching', key), value)

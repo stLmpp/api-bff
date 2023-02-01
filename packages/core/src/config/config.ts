@@ -27,7 +27,7 @@ async function parseAndAssertConfig(config: unknown): Promise<Config> {
   return zodParsed.data;
 }
 
-async function _getConfig() {
+async function _getConfig(): Promise<Config> {
   const filename = pathToFileURL(join(process.cwd(), `dist/api-bff.config.js`));
   if (!PROD) {
     // Hash to invalidate the dynamic import caching
@@ -51,18 +51,18 @@ async function _getConfig() {
   return parseAndAssertConfig(file.default);
 }
 
-export async function getConfig() {
+export async function getConfig(): Promise<Config> {
   if (!_config) {
     _config = await _getConfig();
   }
   return _config;
 }
 
-export function defineConfig(config: ConfigInput) {
+export function defineConfig(config: ConfigInput): ConfigInput {
   return config;
 }
 
-export function resetConfigCache() {
+export function resetConfigCache(): void {
   _config = null;
   if (!PROD) {
     _hash++;

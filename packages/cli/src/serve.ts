@@ -9,13 +9,13 @@ import { typecheckingPlugin } from '../typechecking-plugin.js';
 
 import { getDefaultOptions } from './get-default-esbuild-options.js';
 
-const serverPlugin = () =>
-  ({
+function serverPlugin(): Plugin {
+  return {
     name: 'api-bff-serve',
     setup: (build) => {
       let nodeProgram: ChildProcess | null = null;
       const spinner = ora();
-      const clearProgram = () => {
+      const clearProgram = (): void => {
         if (nodeProgram) {
           nodeProgram.kill();
           nodeProgram = null;
@@ -58,8 +58,8 @@ const serverPlugin = () =>
         count++;
       });
     },
-  } satisfies Plugin);
-
+  };
+}
 export const devCommand = new Command('serve')
   .alias('s')
   .description('Development server')

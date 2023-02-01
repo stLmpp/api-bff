@@ -5,15 +5,16 @@ import { nodeExternalsPlugin } from 'esbuild-node-externals';
 import { copy } from 'esbuild-plugin-copy';
 import { defineConfig } from 'tsup';
 
-const npmLinkPlugin = () =>
-  ({
+function npmLinkPlugin(): Plugin {
+  return {
     name: 'npm-link',
     setup: (build) => {
       build.onEnd(() => {
         spawnSync('npm', ['link'], { stdio: 'inherit' });
       });
     },
-  } satisfies Plugin);
+  };
+}
 
 // @ts-expect-error tsup has a different version of esbuild, so we get an error here,
 // But there is no harm for now
