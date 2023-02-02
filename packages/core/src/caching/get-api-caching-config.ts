@@ -6,30 +6,25 @@ import {
 import { getConfig } from '../config/config.js';
 import { defaultKeyComposer } from '../config/default-key-composer.js';
 
-import { getCachingStrategyConfig } from './caching-resolver.js';
+import { get_caching_strategy_config } from './caching-resolver.js';
 
-export async function getApiCachingConfig(
-  apiConfig: ApiConfigInternal
-): Promise<{
-  hasCachingConfig: boolean;
-  caching: ConfigCaching;
-}> {
+export async function get_api_caching_config(apiConfig: ApiConfigInternal) {
   const config = await getConfig();
-  const defaultConfig = {
+  const default_config = {
     path: CONFIG_CACHING_PATH_DEFAULT,
     keyComposer: defaultKeyComposer,
-    strategy: getCachingStrategyConfig('memory'),
+    strategy: get_caching_strategy_config('memory'),
   } satisfies ConfigCaching;
-  const hasCachingConfig =
+  const has_caching_config =
     apiConfig.caching !== false && (!!config.caching || !!apiConfig.caching);
   return {
-    caching: hasCachingConfig
+    caching: has_caching_config
       ? ({
-          ...defaultConfig,
+          ...default_config,
           ...config.caching,
           ...apiConfig.caching,
         } satisfies ConfigCaching)
-      : defaultConfig,
-    hasCachingConfig,
+      : default_config,
+    has_caching_config,
   };
 }

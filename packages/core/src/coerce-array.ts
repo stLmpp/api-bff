@@ -1,5 +1,5 @@
-import { isArray } from './is-array.js';
+import { is_array } from './is-array.js';
 
-export function coerceArray<T>(possibleArray: T | T[] | readonly T[]): T[] {
-  return isArray(possibleArray) ? [...possibleArray] : [possibleArray];
+export function coerce_array<T>(possibleArray: T | T[] | readonly T[]): T[] {
+  return is_array(possibleArray) ? [...possibleArray] : [possibleArray];
 }

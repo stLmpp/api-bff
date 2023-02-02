@@ -9,7 +9,7 @@
   "main": "dist/src/main.js",
   "scripts": {
     "start": "node ./dist/src/main.js",
-    "serve": "bff serve",
+    "dev": "bff dev",
     "build": "bff build"{{#if testing}},
     "test": "vitest",
     "test:watch": "vitest --watch"

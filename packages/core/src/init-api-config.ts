@@ -5,25 +5,25 @@ import { StatusCodes } from 'http-status-codes';
 import { type PathItemObject } from 'openapi3-ts';
 import { z, type ZodString } from 'zod';
 
-import { ApiConfigSchema } from './api-config/api-config.schema.js';
-import { getApiCachingConfig } from './caching/get-api-caching-config.js';
+import { api_config_schema } from './api-config/api-config.schema.js';
+import { get_api_caching_config } from './caching/get-api-caching-config.js';
 import { getConfig } from './config/config.js';
 import { EXTENSION, ROUTES } from './constants.js';
-import { ErrorCodes } from './error-codes.js';
+import { ERROR_CODES } from './error-codes.js';
 import { ErrorResponse } from './error-response.js';
-import { formatHeaders } from './format-headers.js';
-import { formatQuery } from './format-query.js';
-import { getProviderValidationErrorResponse } from './get-provider-validation-error-response.js';
+import { format_headers } from './format-headers.js';
+import { format_query } from './format-query.js';
+import { get_provider_validation_error_response } from './get-provider-validation-error-response.js';
 import { type HttpClientRequestOptions } from './http-client/http-client.js';
-import { methodHasBody } from './http-client/method-has-body.js';
-import { mapRequestBody } from './map-request-body.js';
-import { mapRequestOtherParams } from './map-request-other-params.js';
-import { mapRequestParams } from './map-request-params.js';
-import { mapResponseBody } from './map-response-body.js';
+import { method_has_body } from './http-client/method-has-body.js';
+import { map_request_body } from './map-request-body.js';
+import { map_request_other_params } from './map-request-other-params.js';
+import { map_request_params } from './map-request-params.js';
+import { map_response_body } from './map-response-body.js';
 import { MethodSchema } from './method.schema.js';
-import { getOperation } from './openapi/get-operation.js';
-import { validateParams } from './validate-params.js';
-import { fromZodErrorToErrorResponseObjects } from './zod-error-formatter.js';
+import { get_operation_openapi } from './openapi/get-operation.js';
+import { validate_params } from './validate-params.js';
+import { from_zod_error_to_error_response_objects } from './zod-error-formatter.js';
 
 export interface InitApiConfigResultMeta {
   method: string;
@@ -36,143 +36,154 @@ export type InitApiConfigResult = [
   InitApiConfigResultMeta
 ];
 
-export async function initApiConfig(
+export async function init_api_config(
   path: string
 ): Promise<InitApiConfigResult> {
-  const globalConfig = await getConfig();
-  const pathWithoutDist = path.replace(ROUTES, '');
-  const reqPath = pathWithoutDist
+  const global_config = await getConfig();
+  const path_without_dist = path.replace(ROUTES, '');
+  const req_path = path_without_dist
     .split('/')
     .map((part) => part.replace('[', ':').replace(/]$/, ''));
-  const regexExtension = new RegExp(`\\.${EXTENSION}$`);
-  const method = MethodSchema.parse(reqPath.pop()!.replace(regexExtension, ''));
+  const regex_extension = new RegExp(`\\.${EXTENSION}$`);
+  const method = MethodSchema.parse(
+    req_path.pop()!.replace(regex_extension, '')
+  );
+  const path_without_extension = path_without_dist.replace(regex_extension, '');
   const file = await import(join('file://', process.cwd(), path));
-  const unparsedApiConfig = file.default;
-  const pathWithoutExtension = pathWithoutDist.replace(regexExtension, '');
-  if (!unparsedApiConfig) {
+  const unparsed_api_config = file.default;
+  if (!unparsed_api_config) {
     throw new Error(
-      `File ${pathWithoutExtension} does not have a default export`
+      `File ${path_without_extension} does not have a default export`
     );
   }
-  const parsedApiConfig = await ApiConfigSchema.safeParseAsync(
-    unparsedApiConfig
+  const parsed_api_config = await api_config_schema.safeParseAsync(
+    unparsed_api_config
   );
-  if (!parsedApiConfig.success) {
-    const errors = fromZodErrorToErrorResponseObjects(
-      parsedApiConfig.error,
+  if (!parsed_api_config.success) {
+    const errors = from_zod_error_to_error_response_objects(
+      parsed_api_config.error,
       'body'
     );
     throw new Error(
-      `File ${pathWithoutExtension} does not contain valid configuration.\n` +
+      `File ${path_without_extension} does not contain valid configuration.\n` +
         `Errors:\n` +
         `${errors
           .map((error) => `- "${error.path}" ${error.message}`)
           .join('\n')}`
     );
   }
-  const apiConfig = parsedApiConfig.data;
-  const { host, path: pathname, request = {}, response } = parsedApiConfig.data;
-  const endPoint = `${reqPath.join('/')}/`;
-  const operation = globalConfig.openapi ? getOperation(apiConfig) : null;
-  const { caching, hasCachingConfig } = await getApiCachingConfig(apiConfig);
-  const shouldCache = method === 'GET' && hasCachingConfig;
+  const api_config = parsed_api_config.data;
+  const {
+    host,
+    path: pathname,
+    request = {},
+    response,
+  } = parsed_api_config.data;
+  const end_point = `${req_path.join('/')}/`;
+  const operation = global_config.openapi
+    ? get_operation_openapi(api_config)
+    : null;
+  const { caching, has_caching_config } = await get_api_caching_config(
+    api_config
+  );
+  const should_cache = method === 'GET' && has_caching_config;
   request.validation ??= {};
-  const paramSchema: Record<string, ZodString> = {};
-  const pathParams: string[] = [];
-  for (const param of reqPath) {
+  const param_schema: Record<string, ZodString> = {};
+  const path_params: string[] = [];
+  for (const param of req_path) {
     if (!param.startsWith(':')) {
       continue;
     }
-    const paramName = param.replace(/^:/, '');
-    pathParams.push(paramName);
-    paramSchema[paramName] = z.string();
+    const param_name = param.replace(/^:/, '');
+    path_params.push(param_name);
+    param_schema[param_name] = z.string();
   }
-  if (pathParams.length) {
+  if (path_params.length) {
     request.validation.params = z
-      .object(paramSchema)
+      .object(param_schema)
       .merge(request.validation.params ?? z.object({}));
   }
   return [
-    endPoint,
+    end_point,
     async (req, res, next) => {
       if (req.method.toLowerCase() !== method.toLowerCase()) {
         next();
         return;
       }
       res.setHeader('x-api-bff', 'true');
-      let params = await validateParams({
+      let params = await validate_params({
         data: req.params,
         schema: request.validation?.params,
         type: 'params',
       });
       if (request.mapping?.params) {
-        params = await mapRequestParams(request.mapping.params, params, req);
+        params = await map_request_params(request.mapping.params, params, req);
       }
-      const formattedQuery = formatQuery(req.query);
-      const parsedQuery = await validateParams({
-        data: formattedQuery,
+      const formatted_query = format_query(req.query);
+      const parsed_query = await validate_params({
+        data: formatted_query,
         type: 'query',
         schema: request.validation?.query,
       });
       let query: Record<string, string> = {};
       if (request.mapping?.query) {
-        query = formatQuery(parsedQuery);
-        query = await mapRequestOtherParams(
+        query = format_query(parsed_query);
+        query = await map_request_other_params(
           request.mapping.query,
-          formatQuery(parsedQuery),
+          format_query(parsed_query),
           req
         );
       }
 
-      const formattedHeaders = formatHeaders(req.headers);
-      const parsedHeaders = await validateParams({
-        data: formattedHeaders,
+      const formatted_headers = format_headers(req.headers);
+      const parsed_headers = await validate_params({
+        data: formatted_headers,
         type: 'headers',
         schema: request.validation?.headers,
       });
       let headers: Record<string, string> = {};
       if (request.mapping?.headers) {
-        headers = await mapRequestOtherParams(
+        headers = await map_request_other_params(
           request.mapping.headers,
-          formatHeaders(parsedHeaders),
+          format_headers(parsed_headers),
           req
         );
       }
       let body: unknown | null = null;
-      if (methodHasBody(method)) {
-        const parsedBody = await validateParams({
+      if (method_has_body(method)) {
+        const parsed_body = await validate_params({
           data: req.body,
           schema: request.validation?.body,
           type: 'body',
         });
         if (request.mapping?.body) {
-          body = await mapRequestBody(request.mapping.body, parsedBody, req);
+          body = await map_request_body(request.mapping.body, parsed_body, req);
         }
       }
-      let newPathName = pathname;
-      for (const paramKey of pathParams) {
-        const paramValue = params[paramKey];
-        newPathName = newPathName.replaceAll(paramKey, paramValue);
+      let new_path_name = pathname;
+      for (const param_key of path_params) {
+        const param_value = params[param_key];
+        new_path_name = new_path_name.replaceAll(param_key, param_value);
       }
-      const requestOptions: HttpClientRequestOptions = {
+      const request_options: HttpClientRequestOptions = {
         method,
         headers,
       };
       if (body) {
-        requestOptions.body = body;
+        request_options.body = body;
       }
-      const urlSearchParams = new URLSearchParams(query);
-      const url = new URL(newPathName, `https://${host}`);
+      const url_search_params = new URLSearchParams(query);
+      const url = new URL(new_path_name, `https://${host}`);
       console.log(`Sending request to ${url}`);
-      urlSearchParams.forEach((value, key) => {
+      url_search_params.forEach((value, key) => {
         url.searchParams.append(key, value);
       });
       console.log('Request params: ', {
-        ...requestOptions,
+        ...request_options,
         query,
         params,
       });
-      let cacheUsed = false;
+      let cache_used = false;
       const cacheKey = caching.keyComposer({
         url,
         query,
@@ -181,58 +192,63 @@ export async function initApiConfig(
         body,
         method,
       });
-      if (shouldCache) {
-        const cachedValue = await caching.strategy
+      if (should_cache) {
+        const cached_value = await caching.strategy
           .get(cacheKey, caching)
           .catch(() => null);
-        if (cachedValue != null) {
+        if (cached_value != null) {
           console.log('Using cached value');
-          res.status(StatusCodes.OK).send(cachedValue);
-          cacheUsed = true;
+          res.status(StatusCodes.OK).send(cached_value);
+          cache_used = true;
         }
       }
-      const httpClient = globalConfig.httpClient;
-      const httpResponse = await httpClient.request(url, requestOptions);
-      if (!httpResponse.ok) {
-        if (cacheUsed) {
+      const http_client = global_config.httpClient;
+      const http_response = await http_client.request(url, request_options);
+      if (!http_response.ok) {
+        if (cache_used) {
           return;
         }
-        const error = await httpResponse.json().catch(() => null);
+        const error = await http_response.json().catch(() => null);
         throw new ErrorResponse({
-          status: httpResponse.status,
-          code: ErrorCodes.ProviderError,
+          status: http_response.status,
+          code: ERROR_CODES.PROVIDER_ERROR,
           message: error?.message ?? error?.error ?? 'Provider internal error',
         });
       }
-      let data = await httpResponse.json();
+      let data = await http_response.json();
       if (response?.providerValidation) {
-        const parsedResponse = await response.providerValidation.safeParseAsync(
-          data
-        );
-        if (!parsedResponse.success) {
-          throw getProviderValidationErrorResponse(
-            fromZodErrorToErrorResponseObjects(parsedResponse.error, 'body')
+        const parsed_response =
+          await response.providerValidation.safeParseAsync(data);
+        if (!parsed_response.success) {
+          throw get_provider_validation_error_response(
+            from_zod_error_to_error_response_objects(
+              parsed_response.error,
+              'body'
+            )
           );
         }
-        data = parsedResponse.data;
+        data = parsed_response.data;
       }
       if (response?.mapping) {
-        data = await mapResponseBody(response.mapping, data);
+        data = await map_response_body(response.mapping, data);
       }
       if (response?.validation) {
-        const parsedResponse = await response.validation.safeParseAsync(data);
-        if (!parsedResponse.success) {
-          throw getProviderValidationErrorResponse(
-            fromZodErrorToErrorResponseObjects(parsedResponse.error, 'body')
+        const parsed_response = await response.validation.safeParseAsync(data);
+        if (!parsed_response.success) {
+          throw get_provider_validation_error_response(
+            from_zod_error_to_error_response_objects(
+              parsed_response.error,
+              'body'
+            )
           );
         }
-        data = parsedResponse.data;
+        data = parsed_response.data;
       }
-      if (shouldCache) {
+      if (should_cache) {
         caching.strategy.set(cacheKey, data, caching).catch(() => null);
         console.log('New value cached');
       }
-      if (cacheUsed) {
+      if (cache_used) {
         return;
       }
       res.status(StatusCodes.OK).send(data);

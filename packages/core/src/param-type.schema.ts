@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/**
+ * @public
+ */
 export const ParamTypeSchema = z.union([
   z.literal('body'),
   z.literal('params'),
@@ -7,4 +10,7 @@ export const ParamTypeSchema = z.union([
   z.literal('query'),
 ]);
 
+/**
+ * @public
+ */
 export type ParamType = z.infer<typeof ParamTypeSchema>;

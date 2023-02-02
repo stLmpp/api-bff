@@ -58,13 +58,13 @@ describe('memory-caching', () => {
     vi.useFakeTimers({
       now: new Date(2023, 0, 27, 0, 0, 0, 0),
     });
-    const newConfig = { ...config, ttl: 15_000 };
+    const new_config = { ...config, ttl: 15_000 };
     await service.set('url4', { id: 4 });
-    expect(await service.get('url4', newConfig)).toEqual({ id: 4 });
+    expect(await service.get('url4', new_config)).toEqual({ id: 4 });
     vi.advanceTimersByTime(15_000);
-    expect(await service.get('url4', newConfig)).toEqual({ id: 4 });
+    expect(await service.get('url4', new_config)).toEqual({ id: 4 });
     vi.advanceTimersByTime(1);
-    expect(await service.get('url4', newConfig)).toBeUndefined();
+    expect(await service.get('url4', new_config)).toBeUndefined();
     vi.useRealTimers();
   });
 });

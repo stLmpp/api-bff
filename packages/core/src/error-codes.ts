@@ -1,8 +1,8 @@
-export const ErrorCodes = {
-  NotFound: 'BFF-404',
-  BadRequest: 'BFF-400',
-  BadConfiguration: 'BFF-000',
-  ResponseValidationError: 'BFF-421',
-  ProviderError: 'BFF-001',
-  InternalServerError: 'BFF-500',
+export const ERROR_CODES = {
+  NOT_FOUND: 'BFF-404',
+  BAD_REQUEST: 'BFF-400',
+  BAD_CONFIGURATION: 'BFF-000',
+  RESPONSE_VALIDATION_ERROR: 'BFF-421',
+  PROVIDER_ERROR: 'BFF-001',
+  INTERNAL_SERVER_ERROR: 'BFF-500',
 } as const;

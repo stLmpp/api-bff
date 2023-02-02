@@ -7,8 +7,8 @@ export interface Dependency {
   version: string;
 }
 
-export const DependencyMap: Readonly<Record<string, Dependency>> = {
-  axios: { name: 'axios', version: '~1.2.6' },
+export const DEPENDENCY_MAP: Readonly<Record<string, Dependency>> = {
+  axios: { name: 'axios', version: '~1.3.1' },
   got: { name: 'got', version: '~12.5.3' },
   typescript: { name: 'typescript', version: '~4.9.4' },
   vitest: { name: 'vitest', version: '~0.28.3' },
@@ -34,19 +34,19 @@ export const DependencyMap: Readonly<Record<string, Dependency>> = {
   },
 };
 
-export const HttpClientDependencies: Readonly<
+export const HTTP_CLIENT_DEPENDENCIES: Readonly<
   Record<
     HttpClientType,
-    { dependencies: Dependency[]; devDependencies: Dependency[] } | null
+    { dependencies: Dependency[]; dev_dependencies: Dependency[] } | null
   >
 > = {
   axios: {
-    dependencies: [DependencyMap.axios],
-    devDependencies: [],
+    dependencies: [DEPENDENCY_MAP.axios],
+    dev_dependencies: [],
   },
   got: {
-    dependencies: [DependencyMap.got],
-    devDependencies: [],
+    dependencies: [DEPENDENCY_MAP.got],
+    dev_dependencies: [],
   },
   fetch: null,
 };

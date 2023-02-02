@@ -1,4 +1,3 @@
-import { generateSchema } from '@anatine/zod-openapi';
 import {
   type ParameterLocation,
   type ParameterObject,
@@ -14,18 +13,20 @@ import {
 import { type Entries } from '../entries.js';
 import { type ParamType } from '../param-type.schema.js';
 
+import { get_schema_from_zod } from './get-schema-from-zod.js';
+
 type Parameters = Record<
   Exclude<ParamType, 'body'>,
   Record<string, ParameterObject>
 >;
 
-const paramTypeToSwaggerParameterTypeMap = {
+const param_type_to_swagger_parameter_type_map = {
   headers: 'header',
   params: 'path',
   query: 'query',
 } satisfies Record<Exclude<ParamType, 'body'>, ParameterLocation>;
 
-function setParametersFromRequestMapping(
+function set_parameters_from_request_mapping(
   mapping: ApiConfigRequestMapping | undefined,
   parameters: Parameters
 ): void {
@@ -40,7 +41,7 @@ function setParametersFromRequestMapping(
     if (typeof value !== 'object') {
       continue;
     }
-    const inKey = paramTypeToSwaggerParameterTypeMap[key];
+    const inKey = param_type_to_swagger_parameter_type_map[key];
     for (const parameter of Object.keys(value)) {
       parameters[key][parameter] = {
         in: inKey,
@@ -51,7 +52,7 @@ function setParametersFromRequestMapping(
   }
 }
 
-function setParametersFromRequestValidation(
+function set_parameters_from_request_validation(
   request: ApiConfigRequestValidation | undefined,
   parameters: Parameters
 ): void {
@@ -65,16 +66,16 @@ function setParametersFromRequestValidation(
     if (key === 'body' || !(value instanceof ZodObject)) {
       continue;
     }
-    const schema = generateSchema(value);
+    const schema = get_schema_from_zod(value);
     if (schema.type !== 'object' || !schema.properties) {
       continue;
     }
-    const inKey = paramTypeToSwaggerParameterTypeMap[key];
-    const entriesParameters = Object.entries(schema.properties);
-    for (const [parameter, _paramSchema] of entriesParameters) {
+    const in_key = param_type_to_swagger_parameter_type_map[key];
+    const entries_parameters = Object.entries(schema.properties);
+    for (const [parameter, _paramSchema] of entries_parameters) {
       const paramSchema = _paramSchema as SchemaObject;
       parameters[key][parameter] = {
-        in: inKey,
+        in: in_key,
         name: parameter,
         schema: paramSchema,
         description: paramSchema.description,
@@ -86,26 +87,29 @@ function setParametersFromRequestValidation(
   }
 }
 
-export function getParameters(config: ApiConfigInternal): ParameterObject[] {
+export function get_parameters(config: ApiConfigInternal): ParameterObject[] {
   const parameters: Parameters = {
     headers: {},
     query: {},
     params: {},
   };
-  setParametersFromRequestMapping(config.request?.mapping, parameters);
-  setParametersFromRequestValidation(config.request?.validation, parameters);
-  const parametersSortPriority = {
+  set_parameters_from_request_mapping(config.request?.mapping, parameters);
+  set_parameters_from_request_validation(
+    config.request?.validation,
+    parameters
+  );
+  const parameters_sort_priority = {
     path: 1,
     query: 2,
     header: 3,
     cookie: 4,
   } as const;
-  const initialValue: ParameterObject[] = [];
+  const initial_value: ParameterObject[] = [];
   return Object.values(parameters)
-    .reduce((acc, item) => [...acc, ...Object.values(item)], initialValue)
+    .reduce((acc, item) => [...acc, ...Object.values(item)], initial_value)
     .sort(
       (parameterA, parameterB) =>
-        parametersSortPriority[parameterA.in] -
-        parametersSortPriority[parameterB.in]
+        parameters_sort_priority[parameterA.in] -
+        parameters_sort_priority[parameterB.in]
     );
 }

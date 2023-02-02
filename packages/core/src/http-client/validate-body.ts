@@ -1,9 +1,9 @@
-export function validateBody(body: unknown): string | null {
+export function validate_body(body: unknown): string | null {
   if (body == null) {
     return null;
   }
   if (Buffer.isBuffer(body)) {
-    return validateBody(body.toString());
+    return validate_body(body.toString());
   }
   if (typeof body === 'string') {
     try {

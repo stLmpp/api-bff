@@ -9,35 +9,35 @@ import {
   type TemplateType,
 } from './template.type.js';
 
-function isNotNil<T>(template: T): template is NonNullable<T> {
+function is_not_nil<T>(template: T): template is NonNullable<T> {
   return template != null;
 }
 
-export async function getTemplates(
+export async function get_templates(
   type: TemplateType,
   options: TemplateOptions
 ): Promise<Template[]> {
-  const templateFiles = await fastGlob(`templates/${type}/**/*.template`, {
+  const template_files = await fastGlob(`templates/${type}/**/*.template`, {
     cwd: fileURLToPath(new URL('.', import.meta.url)),
     dot: true,
   });
   const templates = await Promise.all(
-    templateFiles.map(async (path) => {
+    template_files.map(async (path) => {
       if (options.exclude?.(path)) {
         return null;
       }
-      const fullPath = fileURLToPath(new URL(path, import.meta.url));
+      const full_path = fileURLToPath(new URL(path, import.meta.url));
       return {
         path: path
           .replace(new RegExp(`^/?templates/${type}/`), '')
           .replace(/\.template$/, ''),
-        fullPath,
-        content: await readFile(fullPath, {
+        full_path,
+        content: await readFile(full_path, {
           encoding: 'utf-8',
         }),
         type,
       };
     })
   );
-  return templates.filter(isNotNil);
+  return templates.filter(is_not_nil);
 }

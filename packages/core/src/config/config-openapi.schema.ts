@@ -6,12 +6,12 @@ export const DEFAULT_OPENAPI_VALUES = {
   version: '1',
 } as const;
 
-const ConfigOpenapiObjectExternalDocsSchema = z.object({
+const config_openapi_object_external_docs_schema = z.object({
   url: z.string().url(),
   description: z.string().optional(),
 });
 
-export const ConfigOpenapiObjectSchema = z.object({
+export const config_openapi_object_schema = z.object({
   path: z
     .string()
     .optional()
@@ -42,11 +42,11 @@ export const ConfigOpenapiObjectSchema = z.object({
       z.object({
         name: z.string(),
         description: z.string().optional(),
-        externalDocs: ConfigOpenapiObjectExternalDocsSchema.optional(),
+        externalDocs: config_openapi_object_external_docs_schema.optional(),
       })
     )
     .optional(),
-  externalDocs: ConfigOpenapiObjectExternalDocsSchema.optional(),
+  externalDocs: config_openapi_object_external_docs_schema.optional(),
   security: z.array(z.record(z.string(), z.array(z.string()))).optional(),
   servers: z
     .array(
@@ -77,13 +77,16 @@ export const ConfigOpenapiObjectSchema = z.object({
     .optional(),
 });
 
-export type ConfigOpenapiObject = z.infer<typeof ConfigOpenapiObjectSchema>;
+/**
+ * @public
+ */
+export type ConfigOpenapiObject = z.infer<typeof config_openapi_object_schema>;
 
-export const ConfigOpenapiSchema = z.union([
+export const config_openapi_schema = z.union([
   z
     .boolean()
     .transform(
       (openapi) => openapi && (DEFAULT_OPENAPI_VALUES as ConfigOpenapiObject)
     ),
-  ConfigOpenapiObjectSchema,
+  config_openapi_object_schema,
 ]);

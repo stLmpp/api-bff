@@ -4,20 +4,20 @@ import { type CachingStrategy } from './caching-strategy.js';
 import { FileCaching } from './file-caching.js';
 import { MemoryCaching } from './memory-caching.js';
 
-const cachingInstances = Object.freeze({
+const caching_instances = Object.freeze({
   memory: new MemoryCaching(),
   file: new FileCaching(),
 }) satisfies Record<ConfigCachingStrategy, CachingStrategy>;
 
-export function getCachingStrategyConfig(
+export function get_caching_strategy_config(
   key: ConfigCachingStrategy
 ): CachingStrategy {
-  return cachingInstances[key];
+  return caching_instances[key];
 }
 
 /**
  * @public
  */
 export function getAllDefaultCachingStrategiesInstances(): CachingStrategy[] {
-  return Object.values(cachingInstances);
+  return Object.values(caching_instances);
 }

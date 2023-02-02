@@ -4,6 +4,7 @@ export interface Template {
   path: string;
   content: string;
   type: TemplateType;
+  full_path: string;
 }
 
 export type TemplateParams = { projectName: string } & Record<string, unknown>;

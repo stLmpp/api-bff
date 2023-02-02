@@ -1,22 +1,22 @@
 import { type ErrorRequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { ErrorCodes } from './error-codes.js';
+import { ERROR_CODES } from './error-codes.js';
 import { ErrorResponse } from './error-response.js';
 
-export function errorMiddleware(): ErrorRequestHandler {
+export function error_middleware(): ErrorRequestHandler {
   return (error, req, res, next) => {
-    let errorResponse: ErrorResponse;
+    let response: ErrorResponse;
     if (error instanceof ErrorResponse) {
-      errorResponse = error;
+      response = error;
     } else {
-      errorResponse = new ErrorResponse({
-        code: ErrorCodes.InternalServerError,
+      response = new ErrorResponse({
+        code: ERROR_CODES.INTERNAL_SERVER_ERROR,
         message: error?.message ?? error?.error ?? 'Internal server error',
         status: StatusCodes.INTERNAL_SERVER_ERROR,
       });
     }
-    res.status(errorResponse.status).send(errorResponse);
-    next(errorResponse);
+    res.status(response.status).send(response);
+    next(response);
   };
 }

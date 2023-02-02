@@ -6,44 +6,44 @@ import { type PathsObject } from 'openapi3-ts';
 
 import { getConfig } from './config/config.js';
 import { EXTENSION, ROUTES } from './constants.js';
-import { errorMiddleware } from './error-middleware.js';
-import { initApiConfig } from './init-api-config.js';
-import { notFoundMiddleware } from './not-found-middleware.js';
-import { configureOpenapi } from './openapi/configure-openapi.js';
-import { formatEndPoint } from './openapi/format-end-point.js';
+import { error_middleware } from './error-middleware.js';
+import { init_api_config } from './init-api-config.js';
+import { not_found_middleware } from './not-found-middleware.js';
+import { configure_openapi } from './openapi/configure-openapi.js';
+import { format_end_point_openapi } from './openapi/format-end-point.js';
 
+/**
+ * @public
+ */
 export async function createApplication(): Promise<Express> {
   const server = express().use(helmet()).use(compression()).use(json());
   const config = await getConfig();
-  const middleGlob = '/**/{GET,POST,PUT,PATCH,DELETE}';
-  const globPath = `${ROUTES}${middleGlob}.${EXTENSION}`;
-  const paths = await fastGlob(globPath);
-  const middlewares = await Promise.all(
-    paths.map((path) => initApiConfig(path))
-  );
-  const middlewaresSorted = [...middlewares].sort(
+  const glob_path = `${ROUTES}/**/{GET,POST,PUT,PATCH,DELETE}.${EXTENSION}`;
+  const paths = await fastGlob(glob_path);
+  let handlers = await Promise.all(paths.map((path) => init_api_config(path)));
+  handlers = [...handlers].sort(
     ([endPointA], [endPointB]) => endPointB.length - endPointA.length
   );
-  const openapiPaths: PathsObject = {};
+  const openapi_paths: PathsObject = {};
   const router = Router();
-  for (const [endPoint, handler, meta] of middlewaresSorted) {
-    const finalEndPoint = `${config.prefix}${endPoint}`;
+  for (const [end_points, handler, meta] of handlers) {
+    const final_end_point = `${config.prefix}${end_points}`;
     console.log(
-      `Registering end-point: [${meta.method.toUpperCase()}] ${finalEndPoint}`
+      `Registering end-point: [${meta.method.toUpperCase()}] ${final_end_point}`
     );
-    router.use(endPoint, handler);
+    router.use(end_points, handler);
     if (meta.openapi) {
-      const endPointOpenapi = formatEndPoint(finalEndPoint);
-      openapiPaths[endPointOpenapi] = {
-        ...openapiPaths[endPointOpenapi],
+      const end_point_openapi = format_end_point_openapi(final_end_point);
+      openapi_paths[end_point_openapi] = {
+        ...openapi_paths[end_point_openapi],
         ...meta.openapi,
       };
     }
   }
-  const routerOpenapi = Router();
-  await configureOpenapi(routerOpenapi, openapiPaths);
+  const router_openapi = Router();
+  await configure_openapi(router_openapi, openapi_paths);
   server
-    .use(config.prefix ?? '/', routerOpenapi)
+    .use(config.prefix ?? '/', router_openapi)
     .use(config.prefix ?? '/', router);
-  return server.use(notFoundMiddleware()).use(errorMiddleware());
+  return server.use(not_found_middleware()).use(error_middleware());
 }

@@ -5,7 +5,7 @@ import { nodeExternalsPlugin } from 'esbuild-node-externals';
 import { copy } from 'esbuild-plugin-copy';
 import { defineConfig } from 'tsup';
 
-function npmLinkPlugin(): Plugin {
+function npm_link_plugin(): Plugin {
   return {
     name: 'npm-link',
     setup: (build) => {
@@ -29,7 +29,7 @@ export default defineConfig((options) => {
     }),
   ];
   if (options.watch) {
-    plugins.push(npmLinkPlugin());
+    plugins.push(npm_link_plugin());
     options.watch = ['**/*.{ts,template}'];
   }
   return {

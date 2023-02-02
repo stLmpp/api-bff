@@ -5,18 +5,18 @@ import mock, { restore } from 'mock-fs';
 
 import { type ConfigCaching } from '../config/config-caching.schema.js';
 import { defaultKeyComposer } from '../config/default-key-composer.js';
-import { pathExists } from '../path-exists.js';
+import { path_exists } from '../path-exists.js';
 
 import { type CachingData } from './caching-data.schema.js';
 import { FileCaching, RESERVED_FILENAMES } from './file-caching.js';
 
 describe('file-caching', () => {
   let service: FileCaching;
-  let configCaching: ConfigCaching;
+  let config_caching: ConfigCaching;
 
   beforeEach(() => {
     service = new FileCaching();
-    configCaching = {
+    config_caching = {
       path: '__caching',
       strategy: service,
       keyComposer: defaultKeyComposer,
@@ -42,43 +42,43 @@ describe('file-caching', () => {
     });
 
     it('should invalidate all cache', async () => {
-      let [__cachingExists, file1Exists, file2Exists] = await Promise.all([
-        pathExists('__caching'),
-        pathExists('__caching/file1.json'),
-        pathExists('__caching/file2.json'),
+      let [__caching_exists, file1_exists, file2_exists] = await Promise.all([
+        path_exists('__caching'),
+        path_exists('__caching/file1.json'),
+        path_exists('__caching/file2.json'),
       ]);
-      expect(__cachingExists).toBe(true);
-      expect(file1Exists).toBe(true);
-      expect(file2Exists).toBe(true);
-      await service.invalidateAll(configCaching);
-      [__cachingExists, file1Exists, file2Exists] = await Promise.all([
-        pathExists('__caching'),
-        pathExists('__caching/file1.json'),
-        pathExists('__caching/file2.json'),
+      expect(__caching_exists).toBe(true);
+      expect(file1_exists).toBe(true);
+      expect(file2_exists).toBe(true);
+      await service.invalidateAll(config_caching);
+      [__caching_exists, file1_exists, file2_exists] = await Promise.all([
+        path_exists('__caching'),
+        path_exists('__caching/file1.json'),
+        path_exists('__caching/file2.json'),
       ]);
-      expect(__cachingExists).toBe(false);
-      expect(file1Exists).toBe(false);
-      expect(file2Exists).toBe(false);
+      expect(__caching_exists).toBe(false);
+      expect(file1_exists).toBe(false);
+      expect(file2_exists).toBe(false);
     });
 
     it('should invalidate one key', async () => {
-      let [__cachingExists, file1Exists, file2Exists] = await Promise.all([
-        pathExists('__caching'),
-        pathExists('__caching/file1.json'),
-        pathExists('__caching/file2.json'),
+      let [__caching_exists, file1_exists, file2_exists] = await Promise.all([
+        path_exists('__caching'),
+        path_exists('__caching/file1.json'),
+        path_exists('__caching/file2.json'),
       ]);
-      expect(__cachingExists).toBe(true);
-      expect(file1Exists).toBe(true);
-      expect(file2Exists).toBe(true);
-      await service.invalidate('file1', configCaching);
-      [__cachingExists, file1Exists, file2Exists] = await Promise.all([
-        pathExists('__caching'),
-        pathExists('__caching/file1.json'),
-        pathExists('__caching/file2.json'),
+      expect(__caching_exists).toBe(true);
+      expect(file1_exists).toBe(true);
+      expect(file2_exists).toBe(true);
+      await service.invalidate('file1', config_caching);
+      [__caching_exists, file1_exists, file2_exists] = await Promise.all([
+        path_exists('__caching'),
+        path_exists('__caching/file1.json'),
+        path_exists('__caching/file2.json'),
       ]);
-      expect(__cachingExists).toBe(true);
-      expect(file1Exists).toBe(false);
-      expect(file2Exists).toBe(true);
+      expect(__caching_exists).toBe(true);
+      expect(file1_exists).toBe(false);
+      expect(file2_exists).toBe(true);
     });
   });
 
@@ -96,8 +96,8 @@ describe('file-caching', () => {
 
     beforeEach(async () => {
       await mkdir('__caching');
-      configCaching = {
-        ...configCaching,
+      config_caching = {
+        ...config_caching,
         ttl: 15_000,
       };
     });
@@ -109,7 +109,7 @@ describe('file-caching', () => {
       });
     });
 
-    async function createFiles(files: Record<string, string>): Promise<void> {
+    async function create_files(files: Record<string, string>): Promise<void> {
       await Promise.all(
         Object.entries(files).map(([key, value]) =>
           writeFile(join('__caching', key), value)
@@ -122,15 +122,15 @@ describe('file-caching', () => {
         value: {},
         date: new Date().getTime(),
       };
-      await createFiles({
+      await create_files({
         'file1.json': JSON.stringify(data),
       });
-      const value = await service.get('file1', configCaching);
+      const value = await service.get('file1', config_caching);
       expect(value).toEqual(data.value);
     });
 
     it('should return undefined if not exists', async () => {
-      const value = await service.get('file_not_exists', configCaching);
+      const value = await service.get('file_not_exists', config_caching);
       expect(value).toBeUndefined();
     });
 
@@ -139,16 +139,16 @@ describe('file-caching', () => {
         value: {},
         date: new Date().getTime(),
       };
-      await createFiles({
+      await create_files({
         'file1.json': JSON.stringify(data),
       });
-      const value = await service.get('file1', configCaching);
+      const value = await service.get('file1', config_caching);
       expect(value).toEqual(data.value);
       vi.advanceTimersByTime(15_000);
-      const value1 = await service.get('file1', configCaching);
+      const value1 = await service.get('file1', config_caching);
       expect(value1).toEqual(data.value);
       vi.advanceTimersByTime(1);
-      const value2 = await service.get('file1', configCaching);
+      const value2 = await service.get('file1', config_caching);
       expect(value2).toBeUndefined();
     });
 
@@ -157,32 +157,32 @@ describe('file-caching', () => {
         value: {},
         date: new Date().getTime(),
       };
-      await createFiles({
+      await create_files({
         'file1.json': JSON.stringify(data),
       });
       const value = await service.get('file1', {
-        ...configCaching,
+        ...config_caching,
         ttl: undefined,
       });
       expect(value).toEqual(data.value);
     });
 
     it('should invalidate cache when JSON.parse fails', async () => {
-      await createFiles({
+      await create_files({
         'file1.json': '{ invalid ]',
       });
-      const value = await service.get('file1', configCaching);
+      const value = await service.get('file1', config_caching);
       expect(value).toBeUndefined();
-      expect(await pathExists('__caching/file1.json')).toBe(false);
+      expect(await path_exists('__caching/file1.json')).toBe(false);
     });
 
     it('should invalidate cache when Schema parsing fails', async () => {
-      await createFiles({
+      await create_files({
         'file1.json': '{ "value": [], "date": "string" }',
       });
-      const value = await service.get('file1', configCaching);
+      const value = await service.get('file1', config_caching);
       expect(value).toBeUndefined();
-      expect(await pathExists('__caching/file1.json')).toBe(false);
+      expect(await path_exists('__caching/file1.json')).toBe(false);
     });
   });
 
@@ -197,20 +197,22 @@ describe('file-caching', () => {
 
     it('should create file', async () => {
       mock({ __caching: {} });
-      await service.set('file1', {}, configCaching);
-      expect(await pathExists('__caching/file1.json')).toBe(true);
+      await service.set('file1', {}, config_caching);
+      expect(await path_exists('__caching/file1.json')).toBe(true);
     });
 
     it.each(RESERVED_FILENAMES)(
       'should throw when reserved filename "%s"',
       (filename) =>
-        expect(() => service.set(filename, {}, configCaching)).rejects.toThrow()
+        expect(() =>
+          service.set(filename, {}, config_caching)
+        ).rejects.toThrow()
     );
 
     it('should sanitize invalid characters', async () => {
-      await service.set('/;\\;<;>;:;";|;?;*; ', {}, configCaching);
+      await service.set('/;\\;<;>;:;";|;?;*; ', {}, config_caching);
       expect(
-        await pathExists('__caching/__;___;_-_;-_-;--;-_;_-;--_;__-;____.json')
+        await path_exists('__caching/__;___;_-_;-_-;--;-_;_-;--_;__-;____.json')
       ).toBe(true);
     });
   });

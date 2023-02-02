@@ -2,9 +2,12 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { type ConfigCaching } from '../config/config-caching.schema.js';
-import { pathExists } from '../path-exists.js';
+import { path_exists } from '../path-exists.js';
 
-import { type CachingData, CachingDataSchema } from './caching-data.schema.js';
+import {
+  type CachingData,
+  caching_data_schema,
+} from './caching-data.schema.js';
 import { CachingStrategy } from './caching-strategy.js';
 
 // prettier-ignore
@@ -14,16 +17,19 @@ export const RESERVED_FILENAMES = [
   'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9',
 ] as const;
 
+/**
+ * @public
+ */
 export class FileCaching extends CachingStrategy {
-  private async _createFolder(path: string): Promise<void> {
-    const exists = await pathExists(path);
+  private async create_folder(path: string): Promise<void> {
+    const exists = await path_exists(path);
     if (exists) {
       return;
     }
     await mkdir(path);
   }
 
-  private readonly _characterReplacements: ReadonlyMap<string, string> =
+  private readonly character_replacements: ReadonlyMap<string, string> =
     new Map<string, string>()
       .set('/', '__')
       .set('\\', '___')
@@ -35,39 +41,39 @@ export class FileCaching extends CachingStrategy {
       .set('?', '--_')
       .set('*', '__-');
 
-  private readonly _reservedNames: ReadonlySet<string> = new Set(
+  private readonly reserved_names: ReadonlySet<string> = new Set(
     RESERVED_FILENAMES
   );
 
-  private _sanitizeKey(key: string): string {
-    for (const [character, replacement] of this._characterReplacements) {
+  private sanitize_key(key: string): string {
+    for (const [character, replacement] of this.character_replacements) {
       key = key.replaceAll(character, replacement);
     }
     key = key.replace(/[.\s]$/, '____');
-    if (this._reservedNames.has(key)) {
+    if (this.reserved_names.has(key)) {
       throw new Error(
-        `Key cannot be reserved names: ${[...this._reservedNames].join(', ')}`
+        `Key cannot be reserved names: ${[...this.reserved_names].join(', ')}`
       );
     }
     return key;
   }
 
-  private _getFilePath(path: string, key: string): string {
-    return `${join(path, this._sanitizeKey(key))}.json`;
+  private get_file_path(path: string, key: string): string {
+    return `${join(path, this.sanitize_key(key))}.json`;
   }
 
   async get(key: string, options: ConfigCaching): Promise<unknown> {
     const { path, ttl } = options;
-    const filePath = this._getFilePath(path, key);
-    const exists = await pathExists(filePath);
+    const file_path = this.get_file_path(path, key);
+    const exists = await path_exists(file_path);
     if (!exists) {
       return;
     }
-    const file = await readFile(filePath, { encoding: 'utf8' });
+    const file = await readFile(file_path, { encoding: 'utf8' });
     let cached: CachingData;
     try {
       cached = JSON.parse(file);
-      await CachingDataSchema.parseAsync(cached);
+      await caching_data_schema.parseAsync(cached);
     } catch {
       await this.invalidate(key, options);
       return;
@@ -93,12 +99,12 @@ export class FileCaching extends CachingStrategy {
       value,
       date: new Date().getTime(),
     };
-    await this._createFolder(path);
-    await writeFile(this._getFilePath(path, key), JSON.stringify(cache));
+    await this.create_folder(path);
+    await writeFile(this.get_file_path(path, key), JSON.stringify(cache));
   }
 
   async invalidate(key: string, { path }: ConfigCaching): Promise<void> {
-    await rm(this._getFilePath(path, key));
+    await rm(this.get_file_path(path, key));
   }
 
   async invalidateAll({ path }: ConfigCaching): Promise<void> {

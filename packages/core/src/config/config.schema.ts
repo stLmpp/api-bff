@@ -1,30 +1,37 @@
 import { z } from 'zod';
 
-import { getHttpClientConfig } from '../http-client/get-http-client.js';
+import { get_http_client_config } from '../http-client/get-http-client.js';
 import { HttpClientTypeSchema } from '../http-client/http-client-type.schema.js';
 import { HttpClient } from '../http-client/http-client.js';
 
-import { ConfigCachingSchema } from './config-caching.schema.js';
-import { ConfigOpenapiSchema } from './config-openapi.schema.js';
+import { config_caching_schema } from './config-caching.schema.js';
+import { config_openapi_schema } from './config-openapi.schema.js';
 
-export const ConfigSchema = z.object(
+export const config_schema = z.object(
   {
     prefix: z
       .string()
       .optional()
       .transform((prefix) => prefix?.replace(/^(?!\/)/, '/') ?? ''),
-    caching: ConfigCachingSchema.optional(),
-    openapi: ConfigOpenapiSchema.optional(),
+    caching: config_caching_schema.optional(),
+    openapi: config_openapi_schema.optional(),
     httpClient: z
       .union([HttpClientTypeSchema, z.instanceof(HttpClient)])
       .optional()
       .default('fetch')
-      .transform((type) => getHttpClientConfig(type)),
+      .transform((type) => get_http_client_config(type)),
   },
   {
     required_error: 'API BFF Config file is required',
     invalid_type_error: 'API BFF Config must be an object',
   }
 );
-export type ConfigInput = z.input<typeof ConfigSchema>;
-export type Config = z.infer<typeof ConfigSchema>;
+/**
+ * @public
+ */
+export type ConfigInput = z.input<typeof config_schema>;
+
+/**
+ * @public
+ */
+export type Config = z.infer<typeof config_schema>;

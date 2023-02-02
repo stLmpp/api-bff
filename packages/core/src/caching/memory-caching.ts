@@ -3,6 +3,9 @@ import { type ConfigCaching } from '../config/config-caching.schema.js';
 import { type CachingData } from './caching-data.schema.js';
 import { CachingStrategy } from './caching-strategy.js';
 
+/**
+ * @public
+ */
 export class MemoryCaching extends CachingStrategy {
   private readonly _cache = new Map<string, CachingData>();
 

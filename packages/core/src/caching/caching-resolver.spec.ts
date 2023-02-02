@@ -1,6 +1,6 @@
 import {
   getAllDefaultCachingStrategiesInstances,
-  getCachingStrategyConfig,
+  get_caching_strategy_config,
 } from './caching-resolver.js';
 import { CachingStrategy } from './caching-strategy.js';
 import { FileCaching } from './file-caching.js';
@@ -9,13 +9,13 @@ import { MemoryCaching } from './memory-caching.js';
 describe('caching-resolver', () => {
   describe('getCachingStrategyConfig', () => {
     it('should return memory caching', () => {
-      const caching = getCachingStrategyConfig('memory');
+      const caching = get_caching_strategy_config('memory');
       expect(caching).toBeInstanceOf(MemoryCaching);
       expect(caching).toBeInstanceOf(CachingStrategy);
     });
 
     it('should return file caching', () => {
-      const caching = getCachingStrategyConfig('file');
+      const caching = get_caching_strategy_config('file');
       expect(caching).toBeInstanceOf(FileCaching);
       expect(caching).toBeInstanceOf(CachingStrategy);
     });

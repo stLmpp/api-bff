@@ -1,5 +1,5 @@
 import { type Method } from '../method.schema.js';
 
-export function methodHasBody(method: Method): boolean {
+export function method_has_body(method: Method): boolean {
   return !['GET', 'DELETE'].includes(method);
 }

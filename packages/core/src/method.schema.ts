@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/**
+ * @public
+ */
 export const MethodSchema = z.union([
   z.literal('GET'),
   z.literal('POST'),
@@ -8,4 +11,7 @@ export const MethodSchema = z.union([
   z.literal('DELETE'),
 ]);
 
+/**
+ * @public
+ */
 export type Method = z.infer<typeof MethodSchema>;

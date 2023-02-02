@@ -1,4 +1,4 @@
-import { getHttpClient, getHttpClientConfig } from './get-http-client.js';
+import { getHttpClient, get_http_client_config } from './get-http-client.js';
 import { HttpClientAxios } from './http-client-axios.js';
 import { HttpClientFetch } from './http-client-fetch.js';
 import { HttpClientGot } from './http-client-got.js';
@@ -14,21 +14,21 @@ vi.mock('../config/config.js', () => ({
 describe('get-http-client', () => {
   describe('getHttpClientConfig', () => {
     it('should get instance of HttpClientFetch', async () => {
-      const http = await getHttpClientConfig('fetch');
+      const http = await get_http_client_config('fetch');
       expect(http).toBeInstanceOf(HttpClient);
       expect(http).toBeDefined();
       expect(http).toBeInstanceOf(HttpClientFetch);
     });
 
     it('should get instance of HttpClientAxios', async () => {
-      const http = await getHttpClientConfig('axios');
+      const http = await get_http_client_config('axios');
       expect(http).toBeDefined();
       expect(http).toBeInstanceOf(HttpClient);
       expect(http).toBeInstanceOf(HttpClientAxios);
     });
 
     it('should get instance of HttpClientGot', async () => {
-      const http = await getHttpClientConfig('got');
+      const http = await get_http_client_config('got');
       expect(http).toBeDefined();
       expect(http).toBeInstanceOf(HttpClient);
       expect(http).toBeInstanceOf(HttpClientGot);
@@ -38,7 +38,7 @@ describe('get-http-client', () => {
       class CustomHttpClient extends HttpClient {
         request = vi.fn();
       }
-      const http = await getHttpClientConfig(new CustomHttpClient());
+      const http = await get_http_client_config(new CustomHttpClient());
       expect(http).toBeDefined();
       expect(http).toBeInstanceOf(HttpClient);
       expect(http).toBeInstanceOf(CustomHttpClient);

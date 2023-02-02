@@ -1,5 +1,8 @@
 import { type ConfigCaching } from '../config/config-caching.schema.js';
 
+/**
+ * @public
+ */
 export abstract class CachingStrategy {
   abstract get(key: string, options: ConfigCaching): Promise<unknown>;
   abstract set(

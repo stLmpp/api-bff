@@ -1,21 +1,24 @@
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { fromZodErrorToErrorResponseObjects } from '../zod-error-formatter.js';
+import { from_zod_error_to_error_response_objects } from '../zod-error-formatter.js';
 
 import {
   type Config,
   type ConfigInput,
-  ConfigSchema,
+  config_schema,
 } from './config.schema.js';
 
 let _config: Config | null = null;
 let _hash = 0;
 
-async function parseAndAssertConfig(config: unknown): Promise<Config> {
-  const zodParsed = await ConfigSchema.safeParseAsync(config);
-  if (!zodParsed.success) {
-    const errors = fromZodErrorToErrorResponseObjects(zodParsed.error, 'body');
+async function parse_and_assert_config(config: unknown): Promise<Config> {
+  const parsed = await config_schema.safeParseAsync(config);
+  if (!parsed.success) {
+    const errors = from_zod_error_to_error_response_objects(
+      parsed.error,
+      'body'
+    );
     throw new Error(
       `API BFF Config is invalid.\n` +
         `Errors:\n` +
@@ -24,10 +27,10 @@ async function parseAndAssertConfig(config: unknown): Promise<Config> {
           .join('\n')}`
     );
   }
-  return zodParsed.data;
+  return parsed.data;
 }
 
-async function _getConfig(): Promise<Config> {
+async function get_config(): Promise<Config> {
   const filename = pathToFileURL(join(process.cwd(), `dist/api-bff.config.js`));
   if (!PROD) {
     // Hash to invalidate the dynamic import caching
@@ -48,21 +51,27 @@ async function _getConfig(): Promise<Config> {
         'export default defineConfig({}); // Your config here\n\n'
     );
   }
-  return parseAndAssertConfig(file.default);
+  return parse_and_assert_config(file.default);
 }
 
+/**
+ * @public
+ */
 export async function getConfig(): Promise<Config> {
   if (!_config) {
-    _config = await _getConfig();
+    _config = await get_config();
   }
   return _config;
 }
 
+/**
+ * @public
+ */
 export function defineConfig(config: ConfigInput): ConfigInput {
   return config;
 }
 
-export function resetConfigCache(): void {
+export function reset_config_cache(): void {
   _config = null;
   if (!PROD) {
     _hash++;

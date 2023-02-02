@@ -3,19 +3,19 @@ import { build } from 'esbuild';
 import ora from 'ora';
 import { rimraf } from 'rimraf';
 
-import { getDefaultOptions } from './get-default-esbuild-options.js';
+import { get_default_esbuild_options } from './get-default-esbuild-options.js';
 
-export const buildCommand = new Command('build')
+export const build_command = new Command('build')
   .alias('b')
   .description('Build your application for production')
   .action(async () => {
     const spinner = ora().start('Building for production');
-    const [defaultOptions] = await Promise.all([
-      getDefaultOptions(),
+    const [default_options] = await Promise.all([
+      get_default_esbuild_options(),
       rimraf('dist'),
     ]);
     await build({
-      ...defaultOptions,
+      ...default_options,
     });
     spinner.stopAndPersist({
       prefixText: '✅',

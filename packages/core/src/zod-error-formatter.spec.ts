@@ -5,7 +5,7 @@ import {
   type ZodError,
 } from 'zod';
 
-import { fromZodErrorToErrorResponseObjects } from './zod-error-formatter.js';
+import { from_zod_error_to_error_response_objects } from './zod-error-formatter.js';
 
 function assertIsError(
   parse: SafeParseReturnType<unknown, unknown>
@@ -19,7 +19,7 @@ describe('zod-error-formatted', () => {
   it('should format simple error', () => {
     const parsed = z.object({ id: z.number() }).safeParse({});
     assertIsError(parsed);
-    const formattedErrors = fromZodErrorToErrorResponseObjects(
+    const formattedErrors = from_zod_error_to_error_response_objects(
       parsed.error,
       'body'
     );
@@ -47,7 +47,7 @@ describe('zod-error-formatted', () => {
         union: 'c',
       });
     assertIsError(parsed);
-    const formattedErrors = fromZodErrorToErrorResponseObjects(
+    const formattedErrors = from_zod_error_to_error_response_objects(
       parsed.error,
       'body'
     );
@@ -75,7 +75,10 @@ describe('zod-error-formatted', () => {
     } catch (err) {
       error = err;
     }
-    const formattedErrors = fromZodErrorToErrorResponseObjects(error!, 'body');
+    const formattedErrors = from_zod_error_to_error_response_objects(
+      error!,
+      'body'
+    );
     expect(formattedErrors).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ path: '' }),
@@ -96,7 +99,10 @@ describe('zod-error-formatted', () => {
     } catch (err) {
       error = err;
     }
-    const formattedErrors = fromZodErrorToErrorResponseObjects(error!, 'body');
+    const formattedErrors = from_zod_error_to_error_response_objects(
+      error!,
+      'body'
+    );
     expect(formattedErrors).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

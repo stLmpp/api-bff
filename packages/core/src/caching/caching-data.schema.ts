@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-export const CachingDataSchema = z.object({
+export const caching_data_schema = z.object({
   date: z.number(),
   value: z.any(),
 });
 
-export type CachingData = z.infer<typeof CachingDataSchema>;
+export type CachingData = z.infer<typeof caching_data_schema>;

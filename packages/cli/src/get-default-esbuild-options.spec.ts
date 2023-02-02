@@ -1,7 +1,7 @@
 import mock, { restore } from 'mock-fs';
 import { afterEach } from 'vitest';
 
-import { getDefaultOptions } from './get-default-esbuild-options.js';
+import { get_default_esbuild_options } from './get-default-esbuild-options.js';
 
 describe('get-default-esbuild-options', () => {
   afterEach(() => {
@@ -24,8 +24,8 @@ describe('get-default-esbuild-options', () => {
       },
       'api-bff.config.ts': '',
     });
-    const defaultOptions = await getDefaultOptions();
-    expect(defaultOptions).toEqual(
+    const options = await get_default_esbuild_options();
+    expect(options).toEqual(
       expect.objectContaining({
         entryPoints: expect.arrayContaining([
           'src/main.ts',

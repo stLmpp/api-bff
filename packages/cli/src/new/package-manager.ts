@@ -2,21 +2,21 @@ import { exec } from 'child_process';
 
 import { z } from 'zod';
 
-export const PackageManagerSchema = z.union([
+export const package_manager_schema = z.union([
   z.literal('pnpm'),
   z.literal('yarn'),
   z.literal('npm'),
 ]);
 
-type PackageManager = z.infer<typeof PackageManagerSchema>;
+type PackageManager = z.infer<typeof package_manager_schema>;
 
-export function installDependencies(
+export function install_dependencies(
   path: string,
-  packageManager: PackageManager
+  package_manager: PackageManager
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     exec(
-      `${packageManager} install`,
+      `${package_manager} install`,
       {
         cwd: path,
       },

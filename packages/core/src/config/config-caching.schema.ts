@@ -1,25 +1,30 @@
 import { z, type ZodType } from 'zod';
 
-import { getCachingStrategyConfig } from '../caching/caching-resolver.js';
+import { get_caching_strategy_config } from '../caching/caching-resolver.js';
 import { CachingStrategy } from '../caching/caching-strategy.js';
 import { MethodSchema } from '../method.schema.js';
 
-const URLSChema: ZodType<URL> = z.any();
+const url_schema: ZodType<URL> = z.any();
 
-const ConfigCachingStrategySchema = z.union([
+const config_caching_strategy_schema = z.union([
   z.literal('memory'),
   z.literal('file'),
 ]);
 
-export type ConfigCachingStrategy = z.infer<typeof ConfigCachingStrategySchema>;
+/**
+ * @public
+ */
+export type ConfigCachingStrategy = z.infer<
+  typeof config_caching_strategy_schema
+>;
 
 export const CONFIG_CACHING_PATH_DEFAULT = '__caching';
 
-const ConfigCachingKeyComposerSchema = z
+const config_caching_key_composer_schema = z
   .function()
   .args(
     z.object({
-      url: URLSChema,
+      url: url_schema,
       query: z.record(z.string()),
       params: z.record(z.string()),
       headers: z.record(z.string()),
@@ -29,18 +34,25 @@ const ConfigCachingKeyComposerSchema = z
   )
   .returns(z.string());
 
+/**
+ * @public
+ */
 export type ConfigCachingKeyComposer = z.infer<
-  typeof ConfigCachingKeyComposerSchema
+  typeof config_caching_key_composer_schema
 >;
 
-export const ConfigCachingSchema = z.object({
+export const config_caching_schema = z.object({
   path: z.string().optional().default(CONFIG_CACHING_PATH_DEFAULT),
   ttl: z.number().optional(),
-  keyComposer: ConfigCachingKeyComposerSchema.optional(),
+  keyComposer: config_caching_key_composer_schema.optional(),
   strategy: z
-    .union([ConfigCachingStrategySchema, z.instanceof(CachingStrategy)])
+    .union([config_caching_strategy_schema, z.instanceof(CachingStrategy)])
     .transform((type) =>
-      typeof type === 'string' ? getCachingStrategyConfig(type) : type
+      typeof type === 'string' ? get_caching_strategy_config(type) : type
     ),
 });
-export type ConfigCaching = z.infer<typeof ConfigCachingSchema>;
+
+/**
+ * @public
+ */
+export type ConfigCaching = z.infer<typeof config_caching_schema>;

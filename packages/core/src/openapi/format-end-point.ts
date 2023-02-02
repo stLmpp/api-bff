@@ -1,4 +1,4 @@
-export function formatEndPoint(path: string): string {
+export function format_end_point_openapi(path: string): string {
   return path
     .split('/')
     .map((item) => {

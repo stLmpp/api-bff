@@ -1,15 +1,15 @@
 import { type SchemaObject } from 'openapi3-ts';
 import { type ZodType } from 'zod';
 
-import { getSchemaFromZod } from './get-schema-from-zod.js';
+import { get_schema_from_zod } from './get-schema-from-zod.js';
 
-export function getContentSchemaFromZod(zodSchema: ZodType): {
+export function get_content_schema_openapi_from_zod(zodSchema: ZodType): {
   content: { 'application/json': { schema: SchemaObject } };
 } {
   return {
     content: {
       'application/json': {
-        schema: getSchemaFromZod(zodSchema),
+        schema: get_schema_from_zod(zodSchema),
       },
     },
   };

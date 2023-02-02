@@ -1,14 +1,14 @@
-import { coerceArray } from './coerce-array.js';
+import { coerce_array } from './coerce-array.js';
 
 describe('coerce-array', () => {
   it('should coerce non-array to array', () => {
-    expect(coerceArray({})).toEqual([{}]);
-    expect(coerceArray(1)).toEqual([1]);
-    expect(coerceArray('')).toEqual(['']);
+    expect(coerce_array({})).toEqual([{}]);
+    expect(coerce_array(1)).toEqual([1]);
+    expect(coerce_array('')).toEqual(['']);
   });
 
   it('should work with array', () => {
-    expect(coerceArray([])).toEqual([]);
-    expect(coerceArray([1])).toEqual([1]);
+    expect(coerce_array([])).toEqual([]);
+    expect(coerce_array([1])).toEqual([1]);
   });
 });

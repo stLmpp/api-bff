@@ -2,7 +2,7 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 
 import { afterAll, beforeAll, beforeEach, expect } from 'vitest';
 
-import { defineConfig, getConfig, resetConfigCache } from './config.js';
+import { defineConfig, getConfig, reset_config_cache } from './config.js';
 
 describe('config', () => {
   beforeAll(async () => {
@@ -15,7 +15,7 @@ describe('config', () => {
 
   afterEach(async () => {
     await rm('dist', { recursive: true, force: true });
-    resetConfigCache();
+    reset_config_cache();
   });
 
   beforeEach(async () => {

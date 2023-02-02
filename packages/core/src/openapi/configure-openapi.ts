@@ -5,7 +5,7 @@ import { serve, setup } from 'swagger-ui-express';
 
 import { getConfig } from '../config/config.js';
 
-export async function configureOpenapi(
+export async function configure_openapi(
   router: Router,
   paths: PathsObject
 ): Promise<void> {
@@ -14,7 +14,7 @@ export async function configureOpenapi(
     return;
   }
   const { openapi, prefix } = config;
-  const openapiObject: OpenAPIObject = {
+  const openapi_object: OpenAPIObject = {
     openapi: '3.0.2',
     paths,
     info: {
@@ -36,12 +36,12 @@ export async function configureOpenapi(
   );
   router
     .get(`${openapi.path}/swagger.json`, (_, res) => {
-      res.status(StatusCodes.OK).send(openapiObject);
+      res.status(StatusCodes.OK).send(openapi_object);
     })
     .use(
       openapi.path,
       serve,
-      setup(openapiObject, {
+      setup(openapi_object, {
         swaggerOptions: {
           displayRequestDuration: true,
           persistAuthorization: true,

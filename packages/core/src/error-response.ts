@@ -1,7 +1,13 @@
 import { getReasonPhrase } from 'http-status-codes';
 
-import { type ErrorResponseErrorObject, type ErrorResponseInterface } from './error-response.schema.js';
+import {
+  type ErrorResponseErrorObject,
+  type ErrorResponseInterface,
+} from './error-response.schema.js';
 
+/**
+ * @public
+ */
 export class ErrorResponse implements ErrorResponseInterface {
   constructor({
     status,
@@ -28,4 +34,3 @@ export class ErrorResponse implements ErrorResponseInterface {
   code: string;
   message: string;
 }
-

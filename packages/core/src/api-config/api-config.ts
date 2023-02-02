@@ -97,6 +97,10 @@ type ResponseMapping<Body, OpenapiBody> =
         | ((body: Body) => OpenapiBody[K]);
     };
 
+/**
+ * @public
+ * @param config
+ */
 export function apiConfig<
   Route extends string,
   RequestValidationBody extends ZodType,
@@ -163,4 +167,7 @@ export function apiConfig<
   return config;
 }
 
+/**
+ * @public
+ */
 export type ApiConfig = Parameters<typeof apiConfig>[0];

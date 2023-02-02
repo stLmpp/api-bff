@@ -2,7 +2,7 @@ import { type Request } from 'express';
 
 import { type ApiConfigRequestMappingParams } from './api-config/api-config.schema.js';
 
-export async function mapRequestParams(
+export async function map_request_params(
   mapping: ApiConfigRequestMappingParams,
   data: Record<string, string>,
   req: Request
@@ -10,20 +10,20 @@ export async function mapRequestParams(
   if (typeof mapping === 'function') {
     return mapping(data, req);
   }
-  const finalResult: Record<string, string> = {};
+  const final_result: Record<string, string> = {};
   const promises: Promise<void>[] = [];
   for (const [key, value] of Object.entries(mapping)) {
-    const dataValue = data[key];
+    const data_value = data[key];
     if (typeof value === 'function') {
       promises.push(
-        Promise.resolve(value(dataValue, req)).then((mappedValue) => {
-          finalResult[key] = mappedValue;
+        Promise.resolve(value(data_value, req)).then((mapped_value) => {
+          final_result[key] = mapped_value;
         })
       );
     } else {
-      finalResult[key] = dataValue;
+      final_result[key] = data_value;
     }
   }
   await Promise.all(promises);
-  return finalResult;
+  return final_result;
 }

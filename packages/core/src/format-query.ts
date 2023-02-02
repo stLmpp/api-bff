@@ -1,4 +1,4 @@
-export function formatQuery(
+export function format_query(
   query: Record<string, unknown>
 ): Record<string, string> {
   return Object.entries(query).reduce(

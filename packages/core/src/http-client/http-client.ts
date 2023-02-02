@@ -1,11 +1,17 @@
 import { type Method } from '../method.schema.js';
 
+/**
+ * @public
+ */
 export interface HttpClientRequestOptions {
   method: Method;
   body?: unknown;
   headers?: Record<string, string>;
 }
 
+/**
+ * @public
+ */
 export abstract class HttpClient {
   abstract request(
     url: URL,

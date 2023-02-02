@@ -1,24 +1,24 @@
 import { getReasonPhrase, type StatusCodes } from 'http-status-codes';
 import { type ResponseObject } from 'openapi3-ts';
 
-import { ErrorResponseSchema } from '../error-response.schema.js';
+import { error_response_schema } from '../error-response.schema.js';
 
-import { getContentSchemaFromZod } from './get-content-schema-from-zod.js';
+import { get_content_schema_openapi_from_zod } from './get-content-schema-from-zod.js';
 
-const errorSchema = getContentSchemaFromZod(ErrorResponseSchema);
+const error_schema = get_content_schema_openapi_from_zod(error_response_schema);
 
-export function getErrorSchema(status: StatusCodes): ResponseObject {
+export function get_error_schema_openapi(status: StatusCodes): ResponseObject {
   return {
-    ...errorSchema,
+    ...error_schema,
     description: getReasonPhrase(status),
     content: {
-      ...errorSchema.content,
+      ...error_schema.content,
       'application/json': {
-        ...errorSchema.content['application/json'],
+        ...error_schema.content['application/json'],
         schema: {
-          ...errorSchema.content['application/json'].schema,
+          ...error_schema.content['application/json'].schema,
           properties: {
-            ...errorSchema.content['application/json'].schema.properties,
+            ...error_schema.content['application/json'].schema.properties,
             status: {
               type: 'integer',
               example: status,

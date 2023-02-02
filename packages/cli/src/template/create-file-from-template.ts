@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { outputFile } from 'fs-extra';
 import handlebars from 'handlebars';
 
-import { getTemplates } from './get-templates.js';
+import { get_templates } from './get-templates.js';
 import {
   type Template,
   type TemplateOptions,
@@ -11,38 +11,38 @@ import {
   type TemplateType,
 } from './template.type.js';
 
-async function replaceFileWithParams(
+async function replace_file_with_params(
   file: string,
   params: TemplateParams
 ): Promise<string> {
   return handlebars.compile(file)(params);
 }
 
-export async function createFileFromTemplate(
+export async function create_file_from_template(
   template: Template,
   params: TemplateParams
 ): Promise<void> {
-  const file = await replaceFileWithParams(template.content, params);
+  const file = await replace_file_with_params(template.content, params);
   await outputFile(
     join(process.cwd(), params.projectName, template.path),
     file
   );
 }
 
-export async function createFilesFromTemplates(
+export async function create_files_from_templates(
   templates: Template[],
   params: TemplateParams
 ): Promise<void> {
   await Promise.all(
-    templates.map((template) => createFileFromTemplate(template, params))
+    templates.map((template) => create_file_from_template(template, params))
   );
 }
 
-export async function createTemplateFiles(
+export async function create_template_files(
   type: TemplateType,
   params: TemplateParams,
   options: TemplateOptions = {}
 ): Promise<void> {
-  const templates = await getTemplates(type, options);
-  await createFilesFromTemplates(templates, params);
+  const templates = await get_templates(type, options);
+  await create_files_from_templates(templates, params);
 }

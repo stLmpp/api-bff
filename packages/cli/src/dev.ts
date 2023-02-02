@@ -5,24 +5,24 @@ import { context, type Plugin } from 'esbuild';
 import ora from 'ora';
 import { rimraf } from 'rimraf';
 
-import { typecheckingPlugin } from '../typechecking-plugin.js';
+import { typechecking_plugin } from '../typechecking-plugin.js';
 
-import { getDefaultOptions } from './get-default-esbuild-options.js';
+import { get_default_esbuild_options } from './get-default-esbuild-options.js';
 
-function serverPlugin(): Plugin {
+function dev_plugin(): Plugin {
   return {
     name: 'api-bff-serve',
     setup: (build) => {
       let nodeProgram: ChildProcess | null = null;
       const spinner = ora();
-      const clearProgram = (): void => {
+      const clear_program = (): void => {
         if (nodeProgram) {
           nodeProgram.kill();
           nodeProgram = null;
         }
       };
       build.onEnd((buildResult) => {
-        clearProgram();
+        clear_program();
         if (buildResult.errors.length) {
           spinner.stopAndPersist({
             prefixText: '❌',
@@ -50,7 +50,7 @@ function serverPlugin(): Plugin {
         );
       });
       build.onDispose(() => {
-        clearProgram();
+        clear_program();
       });
       let count = 0;
       build.onStart(() => {
@@ -60,15 +60,14 @@ function serverPlugin(): Plugin {
     },
   };
 }
-export const devCommand = new Command('serve')
-  .alias('s')
+export const dev_command = new Command('dev')
   .description('Development server')
   .action(async () => {
     const [defaultOptions] = await Promise.all([
-      getDefaultOptions(),
+      get_default_esbuild_options(),
       rimraf('dist'),
     ]);
-    defaultOptions.plugins.push(serverPlugin(), typecheckingPlugin());
+    defaultOptions.plugins.push(dev_plugin(), typechecking_plugin());
     const result = await context({
       ...defaultOptions,
       sourcemap: true,

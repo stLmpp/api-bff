@@ -1,10 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
 import { type z, type ZodType } from 'zod';
 
-import { ErrorCodes } from './error-codes.js';
+import { ERROR_CODES } from './error-codes.js';
 import { ErrorResponse } from './error-response.js';
 import { type ParamType } from './param-type.schema.js';
-import { fromZodErrorToErrorResponseObjects } from './zod-error-formatter.js';
+import { from_zod_error_to_error_response_objects } from './zod-error-formatter.js';
 
 interface ValidateParamsArgs<T, Z extends ZodType> {
   data: T;
@@ -12,7 +12,7 @@ interface ValidateParamsArgs<T, Z extends ZodType> {
   type: ParamType;
 }
 
-export async function validateParams<T, Z extends ZodType>({
+export async function validate_params<T, Z extends ZodType>({
   type,
   schema,
   data,
@@ -20,14 +20,14 @@ export async function validateParams<T, Z extends ZodType>({
   if (!schema) {
     return data;
   }
-  const parsedData = await schema.safeParseAsync(data);
-  if (!parsedData.success) {
+  const parsed = await schema.safeParseAsync(data);
+  if (!parsed.success) {
     throw new ErrorResponse({
       status: StatusCodes.BAD_REQUEST,
-      errors: fromZodErrorToErrorResponseObjects(parsedData.error, type),
+      errors: from_zod_error_to_error_response_objects(parsed.error, type),
       message: `Invalid input on ${type}`,
-      code: ErrorCodes.BadRequest,
+      code: ERROR_CODES.BAD_REQUEST,
     });
   }
-  return parsedData.data;
+  return parsed.data;
 }

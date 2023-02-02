@@ -9,28 +9,28 @@ import ora from 'ora';
 import { simpleGit } from 'simple-git';
 import { z } from 'zod';
 
-import { createTemplateFiles } from '../template/create-file-from-template.js';
+import { create_template_files } from '../template/create-file-from-template.js';
 
 import {
   type Dependency,
-  DependencyMap,
-  HttpClientDependencies,
+  DEPENDENCY_MAP,
+  HTTP_CLIENT_DEPENDENCIES,
 } from './dependencies.js';
 import {
-  installDependencies,
-  PackageManagerSchema,
+  install_dependencies,
+  package_manager_schema,
 } from './package-manager.js';
 
-const PackageManagerChoices = PackageManagerSchema.options.map(
+const package_manager_choices = package_manager_schema.options.map(
   (item) => item.value
 );
-const HttpClientChoices = HttpClientTypeSchema.options.map(
+const http_client_choices = HttpClientTypeSchema.options.map(
   (item) => item.value
 );
 
-const NewCommandOptionsSchema = z.object({
+const new_command_options_schema = z.object({
   prefix: z.string(),
-  packageManager: PackageManagerSchema.optional(),
+  packageManager: package_manager_schema.optional(),
   prettier: z.boolean().optional(),
   eslint: z.boolean().optional(),
   httpClient: HttpClientTypeSchema.optional(),
@@ -38,7 +38,7 @@ const NewCommandOptionsSchema = z.object({
   testing: z.boolean().optional(),
 });
 
-export const newCommand = new Command('new')
+export const new_command = new Command('new')
   .alias('n')
   .description('Create a new applicaiton template')
   .argument('[name]', 'Name of the project', '')
@@ -47,7 +47,7 @@ export const newCommand = new Command('new')
     new Option(
       '-m, --package-manager <string>',
       'Package manager used by your application'
-    ).choices(PackageManagerChoices)
+    ).choices(package_manager_choices)
   )
   .option('--prettier [boolean]', 'Add prettier')
   .option('--eslint [boolean]', 'Add eslint')
@@ -55,27 +55,29 @@ export const newCommand = new Command('new')
   .option('--skip-git [boolean]', 'Skip git initialization')
   .addOption(
     new Option('--http-client <string>', 'Http client used in the BFF').choices(
-      HttpClientChoices
+      http_client_choices
     )
   )
-  .action(async (projectName: string, unparsedOptions) => {
-    const options = await NewCommandOptionsSchema.parseAsync(unparsedOptions);
-    if (!projectName) {
-      const { _projectName } = await inquirer.prompt({
-        name: '_projectName',
+  .action(async (project_name: string, unparsed_options) => {
+    const options = await new_command_options_schema.parseAsync(
+      unparsed_options
+    );
+    if (!project_name) {
+      const { _project_name } = await inquirer.prompt({
+        name: '_project_name',
         type: 'input',
         message: () => `Project name: `,
         validate: (arg) =>
           /^[a-zA-Z_-]+(\d|[a-zA-Z_-])+?/.test(String(arg)) ||
           'Project name must start with a letter and only contain letters and numbers',
       });
-      projectName = _projectName;
+      project_name = _project_name;
     }
     const spinner = ora();
-    spinner.start(`Checking if folder "${projectName}" already exists`);
-    const exists = await pathExists(projectName);
+    spinner.start(`Checking if folder "${project_name}" already exists`);
+    const exists = await pathExists(project_name);
     if (exists) {
-      await rm(projectName, { force: true, recursive: true }); // TODO remove
+      await rm(project_name, { force: true, recursive: true }); // TODO remove
       // spinner.stopAndPersist({
       //   prefix: '❌'
       //   text: `Folder with "${projectName}" already exists.`,
@@ -87,33 +89,34 @@ export const newCommand = new Command('new')
       const { packageManager } = await inquirer.prompt({
         name: 'packageManager',
         type: 'list',
-        choices: () => PackageManagerChoices,
+        choices: () => package_manager_choices,
         message: () => 'Choose your package manager',
       });
-      options.packageManager = PackageManagerSchema.parse(packageManager);
+      options.packageManager = package_manager_schema.parse(packageManager);
     }
     if (!options.httpClient) {
-      const { httpClient } = await inquirer.prompt({
-        name: 'httpClient',
+      const { http_client } = await inquirer.prompt({
+        name: 'http_client',
         type: 'list',
-        choices: () => HttpClientChoices,
+        choices: () => http_client_choices,
         message: () => 'Choose the Http client used to make requests',
       });
-      options.httpClient = HttpClientTypeSchema.parse(httpClient);
+      options.httpClient = HttpClientTypeSchema.parse(http_client);
     }
-    const excludedFiles: (string | RegExp)[] = [];
+    const excluded_template_files: (string | RegExp)[] = [];
     const dependencies: Dependency[] = [
-      DependencyMap['@api-bff/core'],
-      DependencyMap.zod,
+      DEPENDENCY_MAP['@api-bff/core'],
+      DEPENDENCY_MAP.zod,
     ];
-    const devDependencies: Dependency[] = [
-      DependencyMap['@api-bff/cli'],
-      DependencyMap.typescript,
+    const dev_dependencies: Dependency[] = [
+      DEPENDENCY_MAP['@api-bff/cli'],
+      DEPENDENCY_MAP.typescript,
     ];
-    const httpClientDependencies = HttpClientDependencies[options.httpClient];
-    if (httpClientDependencies) {
-      dependencies.push(...httpClientDependencies.dependencies);
-      devDependencies.push(...httpClientDependencies.devDependencies);
+    const http_client_dependencies =
+      HTTP_CLIENT_DEPENDENCIES[options.httpClient];
+    if (http_client_dependencies) {
+      dependencies.push(...http_client_dependencies.dependencies);
+      dev_dependencies.push(...http_client_dependencies.dev_dependencies);
     }
     if (typeof options.prettier === 'undefined') {
       const { prettier } = await inquirer.prompt({
@@ -124,9 +127,9 @@ export const newCommand = new Command('new')
       options.prettier = prettier;
     }
     if (options.prettier) {
-      devDependencies.push(DependencyMap.prettier);
+      dev_dependencies.push(DEPENDENCY_MAP.prettier);
     } else {
-      excludedFiles.push('.prettierrc');
+      excluded_template_files.push('.prettierrc');
     }
     if (typeof options.eslint === 'undefined') {
       const { eslint } = await inquirer.prompt({
@@ -137,13 +140,13 @@ export const newCommand = new Command('new')
       options.eslint = eslint;
     }
     if (options.eslint) {
-      devDependencies.push(
-        DependencyMap.eslint,
-        DependencyMap['@typescript-eslint/eslint-plugin'],
-        DependencyMap['@typescript-eslint/parser']
+      dev_dependencies.push(
+        DEPENDENCY_MAP.eslint,
+        DEPENDENCY_MAP['@typescript-eslint/eslint-plugin'],
+        DEPENDENCY_MAP['@typescript-eslint/parser']
       );
     } else {
-      excludedFiles.push('.eslintrc.cjs');
+      excluded_template_files.push('.eslintrc.cjs');
     }
     if (typeof options.testing === 'undefined') {
       const { testing } = await inquirer.prompt({
@@ -154,26 +157,26 @@ export const newCommand = new Command('new')
       options.testing = testing;
     }
     if (options.testing) {
-      devDependencies.push(
-        DependencyMap.vitest,
-        DependencyMap['@vitest/coverage-c8']
+      dev_dependencies.push(
+        DEPENDENCY_MAP.vitest,
+        DEPENDENCY_MAP['@vitest/coverage-c8']
       );
     } else {
-      excludedFiles.push('vitest.config.ts', /\.spec.ts.template$/);
+      excluded_template_files.push('vitest.config.ts', /\.spec.ts.template$/);
     }
     if (options.skipGit) {
-      excludedFiles.push('.gitignore');
+      excluded_template_files.push('.gitignore');
     }
     spinner.start(`Creating your project`);
-    await mkdir(projectName);
-    await createTemplateFiles(
+    await mkdir(project_name);
+    await create_template_files(
       'base',
       {
-        projectName,
+        projectName: project_name,
         dependencies: dependencies.sort((depA, depB) =>
           depA.name.localeCompare(depB.name)
         ),
-        devDependencies: devDependencies.sort((depA, depB) =>
+        devDependencies: dev_dependencies.sort((depA, depB) =>
           depA.name.localeCompare(depB.name)
         ),
         prefix: options.prefix,
@@ -181,10 +184,10 @@ export const newCommand = new Command('new')
       },
       {
         exclude: (path) => {
-          if (!excludedFiles.length) {
+          if (!excluded_template_files.length) {
             return false;
           }
-          return excludedFiles.some((file) =>
+          return excluded_template_files.some((file) =>
             typeof file === 'string' ? path.includes(file) : file.test(path)
           );
         },
@@ -195,9 +198,9 @@ export const newCommand = new Command('new')
       text: 'Project created!',
     });
     spinner.start('Installing dependencies');
-    await installDependencies(resolve(projectName), options.packageManager);
+    await install_dependencies(resolve(project_name), options.packageManager);
     if (!options.skipGit) {
-      const git = simpleGit(projectName);
+      const git = simpleGit(project_name);
       try {
         await git.status();
         // Probably is a git repository already
@@ -212,7 +215,7 @@ export const newCommand = new Command('new')
     });
     console.log(
       `Next step:\n\n` +
-        `cd ${projectName}\n` +
+        `cd ${project_name}\n` +
         `Serve your application: ${options.packageManager}${
           options.packageManager === 'npm' ? 'run' : ''
         } serve`

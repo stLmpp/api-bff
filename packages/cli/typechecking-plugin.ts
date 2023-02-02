@@ -2,19 +2,19 @@ import { type ChildProcess, spawn } from 'child_process';
 
 import { type Plugin } from 'esbuild';
 
-export function typecheckingPlugin(): Plugin {
+export function typechecking_plugin(): Plugin {
   return {
     name: 'typechecking',
     setup: (build) => {
       let program: ChildProcess | null = null;
-      const clearProgram = (): void => {
+      const clear_program = (): void => {
         if (program) {
           program.kill();
           program = null;
         }
       };
       build.onEnd(() => {
-        clearProgram();
+        clear_program();
         program = spawn(
           'node',
           ['node_modules/typescript/bin/tsc', '--noEmit'],
@@ -25,7 +25,7 @@ export function typecheckingPlugin(): Plugin {
         );
       });
       build.onDispose(() => {
-        clearProgram();
+        clear_program();
       });
     },
   };
