@@ -2,7 +2,6 @@ import { format_headers } from '../format-headers.js';
 
 import { HttpClient, type HttpClientRequestOptions } from './http-client.js';
 import { method_has_body } from './method-has-body.js';
-import { validate_body } from './validate-body.js';
 
 /**
  * @public
@@ -30,7 +29,7 @@ export class HttpClientGot extends HttpClient {
       }
     }
     const response = await this.http(url, got_options);
-    const body = validate_body(response.body);
+    const body = this.validate_and_stringify_body(response.body);
     return new Response(body, {
       headers: format_headers(response.headers),
       status: response.statusCode,

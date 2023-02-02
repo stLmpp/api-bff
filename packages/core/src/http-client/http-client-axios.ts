@@ -4,7 +4,6 @@ import { format_headers } from '../format-headers.js';
 
 import { HttpClient, type HttpClientRequestOptions } from './http-client.js';
 import { method_has_body } from './method-has-body.js';
-import { validate_body } from './validate-body.js';
 
 /**
  * @public
@@ -32,26 +31,28 @@ export class HttpClientAxios extends HttpClient {
     let response: Response;
     try {
       const axios_response = await this.http.request(axios_options);
-      const body = validate_body(axios_response.data);
+      const body = this.validate_and_stringify_body(axios_response.data);
       response = new Response(body, {
         headers: format_headers(axios_response.headers),
         status: axios_response.status,
         statusText: axios_response.statusText,
       });
     } catch (error) {
-      if (error instanceof this.axios.AxiosError) {
-        // TODO optimize import
+      if (this.axios.isAxiosError(error)) {
         const status =
           error.response?.status ??
           error.status ??
           StatusCodes.INTERNAL_SERVER_ERROR;
-        response = new Response(error.response?.data ?? error.cause, {
-          headers: format_headers(error.response?.headers ?? {}),
-          status,
-          statusText: getReasonPhrase(status),
-        });
+        response = new Response(
+          this.validate_and_stringify_body(error.response?.data),
+          {
+            headers: format_headers(error.response?.headers ?? {}),
+            status,
+            statusText: getReasonPhrase(status),
+          }
+        );
       } else {
-        response = new Response(null, {
+        response = new Response('null', {
           headers: {},
           status: StatusCodes.INTERNAL_SERVER_ERROR,
           statusText: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),

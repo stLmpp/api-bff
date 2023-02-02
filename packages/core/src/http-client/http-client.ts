@@ -25,4 +25,26 @@ export abstract class HttpClient {
   //     responseValidation?: T;
   //   }
   // ): Promise<{ status: number; data: z.infer<T>; success: boolean; }> {}
+
+  protected validate_and_stringify_body(body: unknown): string {
+    if (body == null) {
+      return 'null';
+    }
+    if (Buffer.isBuffer(body)) {
+      return this.validate_and_stringify_body(body.toString());
+    }
+    if (typeof body === 'string') {
+      try {
+        JSON.parse(body);
+        return body;
+      } catch {
+        return 'null';
+      }
+    }
+    try {
+      return JSON.stringify(body);
+    } catch {
+      return 'null';
+    }
+  }
 }
