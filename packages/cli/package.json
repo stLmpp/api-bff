@@ -1,6 +1,6 @@
 {
   "name": "@api-bff/cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -22,7 +22,7 @@
     "watch": "tsup --watch"
   },
   "dependencies": {
-    "@api-bff/core": "~0.1.0",
+    "@api-bff/core": "~0.1.2",
     "commander": "~10.0.0",
     "esbuild": "~0.17.5",
     "esbuild-node-externals": "~1.6.0",
