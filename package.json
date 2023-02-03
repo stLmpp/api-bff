@@ -14,7 +14,6 @@
     "lint": "turbo run lint",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
-    "publish-all": "pnpm publish -r",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "watch": "turbo run watch"

@@ -23,6 +23,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test:ci
-#      - run: pnpm publish-all
-#        env:
-#          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - run: pnpm publish -r
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
