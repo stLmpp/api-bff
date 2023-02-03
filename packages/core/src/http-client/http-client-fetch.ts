@@ -10,6 +10,7 @@ export class HttpClientFetch extends HttpClient {
       method: options.method,
       headers: options.headers,
     };
+    // TODO handle errors
     if (method_has_body(options.method) && options.body) {
       if (typeof options.body === 'string') {
         fetch_options.body = options.body;
@@ -17,9 +18,6 @@ export class HttpClientFetch extends HttpClient {
         fetch_options.body = JSON.stringify(options.body);
       }
     }
-    return fetch(url, {
-      method: options.method,
-      headers: options.headers,
-    });
+    return fetch(url, fetch_options);
   }
 }
