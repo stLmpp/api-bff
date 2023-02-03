@@ -38,6 +38,3 @@ yarn-error.log*
 
 # dist
 dist
-
-# lock
-pnpm-lock.yaml

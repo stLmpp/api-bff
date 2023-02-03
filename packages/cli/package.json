@@ -17,6 +17,7 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest",
+    "test:ci": "vitest --silent",
     "test:watch": "vitest --watch",
     "watch": "tsup --watch"
   },

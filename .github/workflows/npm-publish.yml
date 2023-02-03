@@ -8,35 +8,21 @@ on:
     types: [created]
 
 jobs:
-  build:
+  publish-npm-package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7
-      # - run: npm ci
-      # - run: npm test
-      - run: pnpm install
-      - run: pnpm build
-
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
+          cache: 'pnpm'
           registry-url: https://registry.npmjs.org/
       - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - run: pnpm test
-      # - run: npm ci
-      # - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test:ci
+#      - run: pnpm publish-all
+#        env:
+#          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
