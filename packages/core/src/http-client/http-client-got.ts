@@ -29,6 +29,7 @@ export class HttpClientGot extends HttpClient {
       }
     }
     const response = await this.http(url, got_options);
+    // TODO handle errors
     const body = this.validate_and_stringify_body(response.body);
     return new Response(body, {
       headers: format_headers(response.headers),

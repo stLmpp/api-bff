@@ -30,7 +30,20 @@ describe('http-client-fetch', () => {
     );
   });
 
-  it('should return response', async () => {
+  it('should not stringify body', async () => {
+    await http.request(url, {
+      method: 'POST',
+      body: '{}',
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      url,
+      expect.objectContaining({
+        body: '{}',
+      })
+    );
+  });
+
+  it('should return response from GET', async () => {
     fetchMock.mockResolvedValueOnce(
       new Response('{}', {
         status: 200,
