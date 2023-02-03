@@ -12,10 +12,11 @@
     "dev": "turbo run dev --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
-    "watch": "turbo run watch",
-    "prepare": "husky install",
     "lint-staged": "lint-staged",
-    "publish-all": "pnpm publish -r"
+    "prepare": "husky install",
+    "publish-all": "pnpm publish -r",
+    "test": "turbo run test",
+    "watch": "turbo run watch"
   },
   "devDependencies": {
     "@types/node": "~18.11.18",

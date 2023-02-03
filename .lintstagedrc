@@ -1,4 +1,5 @@
 {
   "*.{ts}": ["prettier --write", "eslint --fix"],
-  "*.{json,md}": ["prettier --write"]
+  "*.{json,md}": ["prettier --write"],
+  "package.json": ["npx sort-package-json"]
 }
