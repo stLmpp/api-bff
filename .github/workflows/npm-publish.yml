@@ -20,6 +20,7 @@ jobs:
           version: 7
       # - run: npm ci
       # - run: npm test
+      - run: pnpm install
       - run: pnpm build
 
   publish-npm:
