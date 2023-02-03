@@ -1,6 +1,6 @@
 {
   "name": "@api-bff/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -24,6 +24,7 @@
     "@api-bff/core": "~0.1.0",
     "commander": "~10.0.0",
     "esbuild": "~0.17.5",
+    "esbuild-node-externals": "~1.6.0",
     "fast-glob": "~3.2.12",
     "fs-extra": "~11.1.0",
     "handlebars": "~4.7.7",
@@ -38,7 +39,6 @@
     "@types/fs-extra": "~11.0.1",
     "@types/inquirer": "~9.0.3",
     "@types/mock-fs": "~4.13.1",
-    "esbuild-node-externals": "~1.6.0",
     "esbuild-plugin-copy": "~2.0.2",
     "mock-fs": "~5.2.0"
   }

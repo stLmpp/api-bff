@@ -14,7 +14,8 @@
     "lint": "turbo run lint",
     "watch": "turbo run watch",
     "prepare": "husky install",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "publish-all": "pnpm publish -r"
   },
   "devDependencies": {
     "@types/node": "~18.11.18",
