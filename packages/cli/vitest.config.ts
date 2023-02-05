@@ -12,11 +12,11 @@ export default defineConfig({
       // branches: 80,
       // lines: 80,
       // functions: 80,
-      exclude: ['**/*.{schema,spec}.ts'],
+      exclude: ['**/*.{schema,spec}.ts', 'scripts/**/*'],
       include: ['src/**/*.ts'],
       excludeNodeModules: true,
     },
-    exclude: ['**/*.schema.ts', 'node_modules'],
+    exclude: ['**/*.schema.ts', 'node_modules', 'scripts/**/*'],
     include: ['**/*.spec.ts'],
   },
   esbuild: {

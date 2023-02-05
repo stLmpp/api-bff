@@ -1,6 +1,3 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
-
 name: Node.js Package
 
 on:
@@ -21,8 +18,10 @@ jobs:
           cache: 'pnpm'
           registry-url: https://registry.npmjs.org/
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      # Test needs to run before build, because there are
+      # some tests that deleted the dist folder
       - run: pnpm test:ci
+      - run: pnpm build
       - run: pnpm publish -r --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

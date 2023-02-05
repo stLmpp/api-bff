@@ -1,6 +1,6 @@
 {
   "name": "@api-bff/cli",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -19,6 +19,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "check-dependencies-version": "tsx scripts/dependency-checker.ts",
     "test": "vitest",
     "test:ci": "vitest --silent",
     "test:watch": "vitest --watch",
@@ -36,14 +37,17 @@
     "ora": "~6.1.2",
     "rimraf": "~4.1.2",
     "simple-git": "~3.16.0",
-    "type-fest": "~3.5.4",
+    "type-fest": "~3.5.5",
     "zod": "~3.20.2"
   },
   "devDependencies": {
     "@types/fs-extra": "~11.0.1",
     "@types/inquirer": "~9.0.3",
     "@types/mock-fs": "~4.13.1",
+    "@types/semver": "~7.3.13",
     "esbuild-plugin-copy": "~2.0.2",
-    "mock-fs": "~5.2.0"
+    "latest-version": "~7.0.0",
+    "mock-fs": "~5.2.0",
+    "semver": "~7.3.8"
   }
 }
