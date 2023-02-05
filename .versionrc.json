@@ -7,7 +7,8 @@
     { "type": "style" },
     { "type": "refactor" },
     { "type": "perf" },
-    { "type": "test" }
+    { "type": "test", "hidden": true },
+    { "type": "ci", "hidden": true }
   ],
   "commitUrlFormat": "https://github.com/stLmpp/api-bff/commits/{{hash}}",
   "compareUrlFormat": "https://github.com/stLmpp/api-bff/compare/{{previousTag}}...{{currentTag}}"
