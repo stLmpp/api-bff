@@ -1,6 +1,10 @@
 {
   "name": "@api-bff/core",
-  "version": "0.1.5",
+  "version": "0.1.6",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stLmpp/api-bff"
+  },
   "license": "MIT",
   "type": "module",
   "exports": {

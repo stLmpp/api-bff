@@ -1,7 +1,11 @@
 {
-  "name": "test-turbo",
-  "version": "0.0.0",
+  "name": "api-bff",
+  "version": "0.1.6",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stLmpp/api-bff"
+  },
   "type": "module",
   "workspaces": [
     "packages/*",
@@ -31,6 +35,7 @@
     "husky": "~8.0.3",
     "lint-staged": "~13.1.0",
     "prettier": "~2.8.3",
+    "standard-version": "^9.5.0",
     "tsup": "~6.5.0",
     "tsx": "~3.12.2",
     "turbo": "~1.7.3",

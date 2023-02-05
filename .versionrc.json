@@ -1,0 +1,14 @@
+{
+  "types": [
+    { "type": "feat", "section": "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "chore" },
+    { "type": "docs" },
+    { "type": "style" },
+    { "type": "refactor" },
+    { "type": "perf" },
+    { "type": "test" }
+  ],
+  "commitUrlFormat": "https://github.com/stLmpp/api-bff/commits/{{hash}}",
+  "compareUrlFormat": "https://github.com/stLmpp/api-bff/compare/{{previousTag}}...{{currentTag}}"
+}
