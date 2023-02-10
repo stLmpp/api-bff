@@ -6,10 +6,7 @@ import { MethodSchema } from '../method.schema.js';
 
 const url_schema: ZodType<URL> = z.any();
 
-const config_caching_strategy_schema = z.union([
-  z.literal('memory'),
-  z.literal('file'),
-]);
+const config_caching_strategy_schema = z.enum(['memory', 'file']);
 
 /**
  * @public

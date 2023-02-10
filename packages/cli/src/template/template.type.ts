@@ -1,4 +1,4 @@
-export type TemplateType = 'base' | 'api';
+export type TemplateType = 'base' | 'end-point';
 
 export interface Template {
   path: string;
@@ -11,4 +11,6 @@ export type TemplateParams = { projectName: string } & Record<string, unknown>;
 
 export interface TemplateOptions {
   exclude?: (path: string) => unknown;
+  path?: string;
+  root?: string;
 }

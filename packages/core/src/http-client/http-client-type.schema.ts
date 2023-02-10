@@ -3,11 +3,7 @@ import { z } from 'zod';
 /**
  * @public
  */
-export const HttpClientTypeSchema = z.union([
-  z.literal('axios'),
-  z.literal('got'),
-  z.literal('fetch'),
-]);
+export const HttpClientTypeSchema = z.enum(['fetch', 'got', 'axios']);
 
 /**
  * @public

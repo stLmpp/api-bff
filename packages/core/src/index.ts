@@ -20,6 +20,7 @@ export { fixed } from './api-config/fixed.js';
 export { forward } from './api-config/forward.js';
 export { createApplication } from './create-application.js';
 export { ErrorResponse } from './error-response.js';
+export { MethodSchema } from './method.schema.js';
 
 // Libs
 export { StatusCodes } from 'http-status-codes';

@@ -21,12 +21,8 @@ import {
   package_manager_schema,
 } from './package-manager.js';
 
-const package_manager_choices = package_manager_schema.options.map(
-  (item) => item.value
-);
-const http_client_choices = HttpClientTypeSchema.options.map(
-  (item) => item.value
-);
+const package_manager_choices = package_manager_schema.options;
+const http_client_choices = HttpClientTypeSchema.options;
 
 const new_command_options_schema = z.object({
   prefix: z.string(),
@@ -218,6 +214,6 @@ export const new_command = new Command('new')
         `cd ${project_name}\n` +
         `Serve your application: ${options.packageManager}${
           options.packageManager === 'npm' ? 'run' : ''
-        } serve`
+        } dev`
     );
   });

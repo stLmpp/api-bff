@@ -40,7 +40,7 @@ describe('zod-error-formatted', () => {
         array: z.array(
           z.object({ id: z.number(), object: z.object({ id: z.number() }) })
         ),
-        union: z.union([z.literal('a'), z.literal('b')]),
+        union: z.enum(['a', 'b']),
       })
       .safeParse({
         array: [{ object: {} }],

@@ -3,13 +3,7 @@ import { z } from 'zod';
 /**
  * @public
  */
-export const MethodSchema = z.union([
-  z.literal('GET'),
-  z.literal('POST'),
-  z.literal('PUT'),
-  z.literal('PATCH'),
-  z.literal('DELETE'),
-]);
+export const MethodSchema = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
 
 /**
  * @public

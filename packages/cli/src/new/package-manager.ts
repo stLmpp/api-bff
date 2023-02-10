@@ -2,11 +2,7 @@ import { exec } from 'child_process';
 
 import { z } from 'zod';
 
-export const package_manager_schema = z.union([
-  z.literal('pnpm'),
-  z.literal('yarn'),
-  z.literal('npm'),
-]);
+export const package_manager_schema = z.enum(['pnpm', 'yarn', 'npm']);
 
 type PackageManager = z.infer<typeof package_manager_schema>;
 

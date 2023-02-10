@@ -20,21 +20,30 @@ async function replace_file_with_params(
 
 export async function create_file_from_template(
   template: Template,
-  params: TemplateParams
+  params: TemplateParams,
+  options: TemplateOptions
 ): Promise<void> {
   const file = await replace_file_with_params(template.content, params);
   await outputFile(
-    join(process.cwd(), params.projectName, template.path),
+    join(
+      options.root ?? process.cwd(),
+      params.projectName,
+      options.path ?? '',
+      template.path
+    ),
     file
   );
 }
 
 export async function create_files_from_templates(
   templates: Template[],
-  params: TemplateParams
+  params: TemplateParams,
+  options: TemplateOptions
 ): Promise<void> {
   await Promise.all(
-    templates.map((template) => create_file_from_template(template, params))
+    templates.map((template) =>
+      create_file_from_template(template, params, options)
+    )
   );
 }
 
@@ -44,5 +53,5 @@ export async function create_template_files(
   options: TemplateOptions = {}
 ): Promise<void> {
   const templates = await get_templates(type, options);
-  await create_files_from_templates(templates, params);
+  await create_files_from_templates(templates, params, options);
 }

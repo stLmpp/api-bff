@@ -8,6 +8,7 @@ import { rimraf } from 'rimraf';
 import { typechecking_plugin } from '../typechecking-plugin.js';
 
 import { get_default_esbuild_options } from './get-default-esbuild-options.js';
+import { is_api_bff_project } from './is-api-bff-project.js';
 
 function dev_plugin(): Plugin {
   return {
@@ -63,6 +64,11 @@ function dev_plugin(): Plugin {
 export const dev_command = new Command('dev')
   .description('Development server')
   .action(async () => {
+    const isApiBffProject = await is_api_bff_project(process.cwd());
+    if (!isApiBffProject) {
+      console.error('Not in a API BFF Project');
+      return;
+    }
     const [defaultOptions] = await Promise.all([
       get_default_esbuild_options(),
       rimraf('dist'),

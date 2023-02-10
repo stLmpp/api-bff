@@ -103,6 +103,21 @@ export async function init_api_config(
       .object(param_schema)
       .merge(request.validation.params ?? z.object({}));
   }
+  if (!method_has_body(method)) {
+    let message = '';
+    if (request.mapping?.body) {
+      message += 'body mapping';
+    }
+    if (request.validation?.body) {
+      message = message + (message ? ' and validation' : 'body validation');
+    }
+
+    if (message) {
+      console.warn(
+        `\x1b[33mPath ${path_without_extension} is a ${method} but has a ${message}, please consider removing it.\x1b[0m`
+      );
+    }
+  }
   return [
     end_point,
     async (req, res, next) => {

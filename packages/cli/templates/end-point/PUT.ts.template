@@ -1,0 +1,6 @@
+import { apiConfig } from '@api-bff/core';
+
+export default apiConfig({
+  host: '{{ host }}',
+  path: '{{ path }}',
+});

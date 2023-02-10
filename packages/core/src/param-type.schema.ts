@@ -3,12 +3,7 @@ import { z } from 'zod';
 /**
  * @public
  */
-export const ParamTypeSchema = z.union([
-  z.literal('body'),
-  z.literal('params'),
-  z.literal('headers'),
-  z.literal('query'),
-]);
+export const ParamTypeSchema = z.enum(['body', 'params', 'headers', 'query']);
 
 /**
  * @public
