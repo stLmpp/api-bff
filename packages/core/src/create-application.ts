@@ -8,6 +8,7 @@ import { getConfig } from './config/config.js';
 import { EXTENSION, ROUTES } from './constants.js';
 import { error_middleware } from './error-middleware.js';
 import { init_api_config } from './init-api-config.js';
+import { Logger } from './logger/logger.js';
 import { not_found_middleware } from './not-found-middleware.js';
 import { configure_openapi } from './openapi/configure-openapi.js';
 import { format_end_point_openapi } from './openapi/format-end-point.js';
@@ -16,6 +17,7 @@ import { format_end_point_openapi } from './openapi/format-end-point.js';
  * @public
  */
 export async function createApplication(): Promise<Express> {
+  const logger = Logger.create('APP');
   const server = express().use(helmet()).use(compression()).use(json());
   const config = await getConfig();
   const glob_path = `${ROUTES}/**/{GET,POST,PUT,PATCH,DELETE}.${EXTENSION}`;
@@ -28,7 +30,7 @@ export async function createApplication(): Promise<Express> {
   const router = Router();
   for (const [end_points, handler, meta] of handlers) {
     const final_end_point = `${config.prefix}${end_points}`;
-    console.log(
+    logger.log(
       `Registering end-point: [${meta.method.toUpperCase()}] ${final_end_point}`
     );
     router.use(end_points, handler);

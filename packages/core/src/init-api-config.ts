@@ -16,6 +16,7 @@ import { format_query } from './format-query.js';
 import { get_provider_validation_error_response } from './get-provider-validation-error-response.js';
 import { type HttpClientRequestOptions } from './http-client/http-client.js';
 import { method_has_body } from './http-client/method-has-body.js';
+import { Logger } from './logger/logger.js';
 import { map_request_body } from './map-request-body.js';
 import { map_request_other_params } from './map-request-other-params.js';
 import { map_request_params } from './map-request-params.js';
@@ -72,6 +73,7 @@ export async function init_api_config(
           .join('\n')}`
     );
   }
+  const logger = Logger.create(path_without_extension);
   const api_config = parsed_api_config.data;
   const {
     host,
@@ -111,10 +113,9 @@ export async function init_api_config(
     if (request.validation?.body) {
       message = message + (message ? ' and validation' : 'body validation');
     }
-
     if (message) {
-      console.warn(
-        `\x1b[33mPath ${path_without_extension} is a ${method} but has a ${message}, please consider removing it.\x1b[0m`
+      logger.warn(
+        `Path ${path_without_extension} is a ${method} but has a ${message}, please consider removing it.`
       );
     }
   }
@@ -189,11 +190,11 @@ export async function init_api_config(
       }
       const url_search_params = new URLSearchParams(query);
       const url = new URL(new_path_name, `https://${host}`);
-      console.log(`Sending request to ${url}`);
+      logger.log(`Sending request to ${url}`);
       url_search_params.forEach((value, key) => {
         url.searchParams.append(key, value);
       });
-      console.log('Request params: ', {
+      logger.log('Request params: ', {
         ...request_options,
         query,
         params,
@@ -212,7 +213,7 @@ export async function init_api_config(
           .get(cacheKey, caching)
           .catch(() => null);
         if (cached_value != null) {
-          console.log('Using cached value');
+          logger.log('Using cached value');
           res.status(StatusCodes.OK).send(cached_value);
           cache_used = true;
         }
@@ -261,7 +262,7 @@ export async function init_api_config(
       }
       if (should_cache) {
         caching.strategy.set(cacheKey, data, caching).catch(() => null);
-        console.log('New value cached');
+        logger.log('New value cached');
       }
       if (cache_used) {
         return;

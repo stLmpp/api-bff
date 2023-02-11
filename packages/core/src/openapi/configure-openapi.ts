@@ -4,6 +4,7 @@ import { type OpenAPIObject, type PathsObject } from 'openapi3-ts';
 import { serve, setup } from 'swagger-ui-express';
 
 import { getConfig } from '../config/config.js';
+import { Logger } from '../logger/logger.js';
 
 export async function configure_openapi(
   router: Router,
@@ -30,8 +31,9 @@ export async function configure_openapi(
     security: openapi.security,
     servers: openapi.servers,
   };
-  console.log(`Registering end-point: [GET] ${prefix ?? ''}${openapi.path}`);
-  console.log(
+  const logger = Logger.create('APP');
+  logger.log(`Registering end-point: [GET] ${prefix ?? ''}${openapi.path}`);
+  logger.log(
     `Registering end-point: [GET] ${prefix ?? ''}${openapi.path}/swagger.json`
   );
   router

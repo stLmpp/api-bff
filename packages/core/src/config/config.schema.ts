@@ -5,6 +5,7 @@ import { HttpClientTypeSchema } from '../http-client/http-client-type.schema.js'
 import { HttpClient } from '../http-client/http-client.js';
 
 import { config_caching_schema } from './config-caching.schema.js';
+import { config_logger_schema } from './config-logger.schema.js';
 import { config_openapi_schema } from './config-openapi.schema.js';
 
 export const config_schema = z.object(
@@ -20,6 +21,7 @@ export const config_schema = z.object(
       .optional()
       .default('fetch')
       .transform((type) => get_http_client_config(type)),
+    logger: config_logger_schema.optional().default({}),
   },
   {
     required_error: 'API BFF Config file is required',

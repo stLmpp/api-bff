@@ -1,11 +1,11 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { pathExists } from 'fs-extra';
 import mock, { restore } from 'mock-fs';
 
 import { type ConfigCaching } from '../config/config-caching.schema.js';
 import { defaultKeyComposer } from '../config/default-key-composer.js';
-import { path_exists } from '../path-exists.js';
 
 import { type CachingData } from './caching-data.schema.js';
 import { FileCaching, RESERVED_FILENAMES } from './file-caching.js';
@@ -43,18 +43,18 @@ describe('file-caching', () => {
 
     it('should invalidate all cache', async () => {
       let [__caching_exists, file1_exists, file2_exists] = await Promise.all([
-        path_exists('__caching'),
-        path_exists('__caching/file1.json'),
-        path_exists('__caching/file2.json'),
+        pathExists('__caching'),
+        pathExists('__caching/file1.json'),
+        pathExists('__caching/file2.json'),
       ]);
       expect(__caching_exists).toBe(true);
       expect(file1_exists).toBe(true);
       expect(file2_exists).toBe(true);
       await service.invalidateAll(config_caching);
       [__caching_exists, file1_exists, file2_exists] = await Promise.all([
-        path_exists('__caching'),
-        path_exists('__caching/file1.json'),
-        path_exists('__caching/file2.json'),
+        pathExists('__caching'),
+        pathExists('__caching/file1.json'),
+        pathExists('__caching/file2.json'),
       ]);
       expect(__caching_exists).toBe(false);
       expect(file1_exists).toBe(false);
@@ -63,18 +63,18 @@ describe('file-caching', () => {
 
     it('should invalidate one key', async () => {
       let [__caching_exists, file1_exists, file2_exists] = await Promise.all([
-        path_exists('__caching'),
-        path_exists('__caching/file1.json'),
-        path_exists('__caching/file2.json'),
+        pathExists('__caching'),
+        pathExists('__caching/file1.json'),
+        pathExists('__caching/file2.json'),
       ]);
       expect(__caching_exists).toBe(true);
       expect(file1_exists).toBe(true);
       expect(file2_exists).toBe(true);
       await service.invalidate('file1', config_caching);
       [__caching_exists, file1_exists, file2_exists] = await Promise.all([
-        path_exists('__caching'),
-        path_exists('__caching/file1.json'),
-        path_exists('__caching/file2.json'),
+        pathExists('__caching'),
+        pathExists('__caching/file1.json'),
+        pathExists('__caching/file2.json'),
       ]);
       expect(__caching_exists).toBe(true);
       expect(file1_exists).toBe(false);
@@ -173,7 +173,7 @@ describe('file-caching', () => {
       });
       const value = await service.get('file1', config_caching);
       expect(value).toBeUndefined();
-      expect(await path_exists('__caching/file1.json')).toBe(false);
+      expect(await pathExists('__caching/file1.json')).toBe(false);
     });
 
     it('should invalidate cache when Schema parsing fails', async () => {
@@ -182,7 +182,7 @@ describe('file-caching', () => {
       });
       const value = await service.get('file1', config_caching);
       expect(value).toBeUndefined();
-      expect(await path_exists('__caching/file1.json')).toBe(false);
+      expect(await pathExists('__caching/file1.json')).toBe(false);
     });
   });
 
@@ -198,7 +198,7 @@ describe('file-caching', () => {
     it('should create file', async () => {
       mock({ __caching: {} });
       await service.set('file1', {}, config_caching);
-      expect(await path_exists('__caching/file1.json')).toBe(true);
+      expect(await pathExists('__caching/file1.json')).toBe(true);
     });
 
     it.each(RESERVED_FILENAMES)(
@@ -212,7 +212,7 @@ describe('file-caching', () => {
     it('should sanitize invalid characters', async () => {
       await service.set('/;\\;<;>;:;";|;?;*; ', {}, config_caching);
       expect(
-        await path_exists('__caching/__;___;_-_;-_-;--;-_;_-;--_;__-;____.json')
+        await pathExists('__caching/__;___;_-_;-_-;--;-_;_-;--_;__-;____.json')
       ).toBe(true);
     });
   });

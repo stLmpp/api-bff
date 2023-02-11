@@ -1,8 +1,9 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { pathExists } from 'fs-extra';
+
 import { type ConfigCaching } from '../config/config-caching.schema.js';
-import { path_exists } from '../path-exists.js';
 
 import {
   type CachingData,
@@ -22,7 +23,7 @@ export const RESERVED_FILENAMES = [
  */
 export class FileCaching extends CachingStrategy {
   private async create_folder(path: string): Promise<void> {
-    const exists = await path_exists(path);
+    const exists = await pathExists(path);
     if (exists) {
       return;
     }
@@ -65,7 +66,7 @@ export class FileCaching extends CachingStrategy {
   async get(key: string, options: ConfigCaching): Promise<unknown> {
     const { path, ttl } = options;
     const file_path = this.get_file_path(path, key);
-    const exists = await path_exists(file_path);
+    const exists = await pathExists(file_path);
     if (!exists) {
       return;
     }
