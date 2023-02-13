@@ -1,4 +1,4 @@
-import { mkdir, rm } from 'node:fs/promises';
+import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 import { HttpClientTypeSchema } from '@api-bff/core';
@@ -73,12 +73,11 @@ export const new_command = new Command('new')
     spinner.start(`Checking if folder "${project_name}" already exists`);
     const exists = await pathExists(project_name);
     if (exists) {
-      await rm(project_name, { force: true, recursive: true }); // TODO remove
-      // spinner.stopAndPersist({
-      //   prefix: '❌'
-      //   text: `Folder with "${projectName}" already exists.`,
-      // });
-      // return;
+      spinner.stopAndPersist({
+        prefixText: '❌',
+        text: `Folder with "${project_name}" already exists.`,
+      });
+      return;
     }
     spinner.stop();
     if (!options.packageManager) {
