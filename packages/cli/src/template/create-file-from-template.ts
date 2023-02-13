@@ -18,7 +18,7 @@ async function replace_file_with_params(
   return handlebars.compile(file)(params);
 }
 
-export async function create_file_from_template(
+async function create_file_from_template(
   template: Template,
   params: TemplateParams,
   options: TemplateOptions
@@ -35,7 +35,7 @@ export async function create_file_from_template(
   );
 }
 
-export async function create_files_from_templates(
+async function create_files_from_templates(
   templates: Template[],
   params: TemplateParams,
   options: TemplateOptions
