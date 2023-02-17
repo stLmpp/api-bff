@@ -38,7 +38,7 @@
     "qs": "~6.11.0",
     "rxjs": "~7.8.0",
     "swagger-ui-express": "~4.6.0",
-    "type-fest": "~3.5.7",
+    "type-fest": "~3.6.0",
     "zod": "~3.20.6"
   },
   "devDependencies": {

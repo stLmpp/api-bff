@@ -23,9 +23,9 @@
     "watch": "turbo run watch"
   },
   "devDependencies": {
-    "@commitlint/cli": "~17.4.3",
-    "@commitlint/config-conventional": "~17.4.3",
-    "@types/node": "~18.13.0",
+    "@commitlint/cli": "~17.4.4",
+    "@commitlint/config-conventional": "~17.4.4",
+    "@types/node": "~18.14.0",
     "@typescript-eslint/eslint-plugin": "~5.52.0",
     "@typescript-eslint/parser": "~5.52.0",
     "@vitest/coverage-c8": "~0.28.5",
@@ -38,9 +38,9 @@
     "standard-version": "^9.5.0",
     "tsup": "~6.6.3",
     "tsx": "~3.12.3",
-    "turbo": "~1.7.4",
+    "turbo": "~1.8.1",
     "typescript": "~4.9.5",
-    "vite": "~4.1.0",
+    "vite": "~4.1.2",
     "vitest": "~0.28.5",
     "vitest-mock-extended": "~1.0.9"
   },
