@@ -1,3 +1,22 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.2.0](https://github.com/stLmpp/api-bff/compare/v0.1.6...v0.2.0) (2023-02-19)
+
+### Features
+
+- **cli:** added new command generate, to help generate files in the project ([8bf0dc6](https://github.com/stLmpp/api-bff/commits/8bf0dc67814d111efa3995eb533686aa2c112153))
+- **core:** added http methods as methods in the HttpClient abstract class ([a5cf963](https://github.com/stLmpp/api-bff/commits/a5cf963c779510eb8399005b5d9e9bf811488d58))
+
+- added changelog ([32226f3](https://github.com/stLmpp/api-bff/commits/32226f3a4977fc85065447c56da9e8d83a179afd))
+- **cli:** removed TODO ([df53584](https://github.com/stLmpp/api-bff/commits/df535849ef6ae533d156823bfd12c44bcd9bdf0b))
+- **core:** added fs-extra and replaced path_exists method with pathExists ([f1a6f0b](https://github.com/stLmpp/api-bff/commits/f1a6f0b404eb94157243ebd09b1e2ef46edc4b56))
+- override clone method on HttpClientResponse ([a60cbbc](https://github.com/stLmpp/api-bff/commits/a60cbbc8be5f96b18f827ec09fba73c26815e55a))
+- revert CHANGELOG deleted ([bcb574f](https://github.com/stLmpp/api-bff/commits/bcb574f80d9eb0eb6d2d6fb91d764de36ae882f4))
+- update dependencies ([437cb7c](https://github.com/stLmpp/api-bff/commits/437cb7cc06d2c7d00e5e58d70ae629feea49732e))
+- updated dependencies ([ce294b5](https://github.com/stLmpp/api-bff/commits/ce294b59dab6bff7381d06d9d9f4f683dcdd56b9))
+
 ## [0.1.6](https://github.com/stLmpp/api-bff/compare/v0.1.5...v0.1.6) (2023-02-05)
 
 ## [0.1.5](https://github.com/stLmpp/api-bff/compare/v0.1.3...v0.1.5) (2023-02-05)
