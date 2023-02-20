@@ -17,5 +17,5 @@ Currently, there are two pacakges to help create the BFF:
 
 | Package | Version | State |
 | - | - | - |
-| [@api-bff/core](packages/core/README.md) | 0.1.0 | Alpha |
-| [@api-bff/cli](packages/cli/README.md) | 0.1.0 | Alpha |
+| [@api-bff/core](packages/core/README.md) | 0.2.0 | Alpha |
+| [@api-bff/cli](packages/cli/README.md) | 0.2.0 | Alpha |
